@@ -114,3 +114,28 @@ New customer needs help setting up their account over phone.
 
 #### Logic:
 Welcome to our service! I'm excited to help you get set up today...
+```
+
+
+This runs at:
+POST /latin/account_setup
+…and behaves as expected — across chat, voice, or email, depending on the variant.
+
+🔭 Where We're Headed
+
+A rich type system for logic flows
+User-facing IDEs with visual diffing, testing, and simulation
+Runtime observability and semantic tracing
+Native integrations with voice, chat, email, APIs
+Open template ecosystem for business domains
+📖 Who This Is For
+
+Builders of the next wave of automation
+Domain experts who know what should happen, but not how to code it
+AI teams who want testable, explainable prompting infrastructure
+Thinkers who believe software should speak human
+🧬 Join the Movement
+
+Latin is not just a tool.
+It’s a new way to think about programming.
+A new literacy for the next era of computing.
