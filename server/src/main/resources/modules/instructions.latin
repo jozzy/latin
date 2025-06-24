@@ -1,0 +1,3 @@
+<ENDPOINT:validate>
+
+If the event is an error return "NOT_OK" otherwise return "OK".

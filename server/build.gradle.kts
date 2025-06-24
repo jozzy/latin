@@ -21,7 +21,7 @@ dependencies {
     implementation("org.eclipse.lmos:arc-graphql-spring-boot-starter:$arcVersion")
     implementation("org.eclipse.lmos:arc-assistants:$arcVersion")
 
-    implementation(libs.ktor.server.jvm)
+    implementation(libs.ktor.server.cio)
     implementation(libs.kotlinx.coroutines.slf4j)
     implementation(libs.kotlinx.coroutines.jdk8)
     implementation(libs.kotlinx.coroutines.reactor)
