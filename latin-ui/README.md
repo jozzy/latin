@@ -1,5 +1,4 @@
-# Baseline for Masaic theme  Canvas and Tiles 
-
+# Concept for Masaic Latin
 
 ---
 
