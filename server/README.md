@@ -1,5 +1,8 @@
 
 
+
+Set environment variable `OPENAI_API_KEY` to your OpenAI API key.
+
 Start server with:
 ```bash
 ./gradlew run
