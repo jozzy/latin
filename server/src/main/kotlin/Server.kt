@@ -13,16 +13,15 @@ import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
 import org.eclipse.lmos.arc.agents.ConversationAgent
 import org.eclipse.lmos.arc.agents.agent.health
-import org.eclipse.lmos.arc.agents.conversation.AssistantMessage
-import org.eclipse.lmos.arc.agents.conversation.latest
-import org.eclipse.lmos.arc.agents.conversation.toConversation
 import org.eclipse.lmos.arc.agents.getAgentByName
 import org.eclipse.lmos.arc.core.getOrThrow
-import org.eclipse.lmos.arc.core.map
 import org.eclipse.lmos.arc.graphql.inbound.EventSubscriptionHolder
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
+import org.latin.server.modules.ModulesManager
+import org.latin.server.modules.runModule
 
 fun ArcAgents.serve(
+    modulesManager: ModulesManager,
     wait: Boolean = true,
     port: Int? = null,
 ) {
@@ -50,16 +49,11 @@ fun ArcAgents.serve(
 
             post("/events/*") {
                 val agent = getAgentByName("latin-agent") as ConversationAgent
-                val result =
-                    agent.execute(
-                        call.receiveText().toConversation(),
-                        context = setOf(ModuleRequest(call.request.uri.substringAfterLast("/events/")))
-                    )
-                        .map { it.latest<AssistantMessage>()?.content ?: "" }.getOrThrow()
+                val module = modulesManager.getModuleByEndpoint(call.request.uri.substringAfterLast("/events/"))
+                    ?: error("Could not find module")
+                val result = agent.runModule(module, input = call.receiveText()).getOrThrow()
                 call.respondText(result)
             }
         }
     }.start(wait = wait)
 }
-
-data class ModuleRequest(val endpoint: String)
