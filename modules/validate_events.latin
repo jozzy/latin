@@ -1,3 +1,5 @@
-<ENDPOINT:validate>
 
-If the event is an error return "NOT_OK" otherwise return "OK".
+
+When a @ping event arrives:
+  • If status is UP, return -><OK>.
+  • Otherwise, return -><NOT_OK>.

@@ -11,19 +11,16 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
-import org.eclipse.lmos.arc.agents.ConversationAgent
 import org.eclipse.lmos.arc.agents.agent.health
-import org.eclipse.lmos.arc.agents.getAgentByName
-import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.graphql.inbound.EventSubscriptionHolder
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
 import org.latin.server.modules.ModulesManager
-import org.latin.server.modules.runModule
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
     wait: Boolean = true,
     port: Int? = null,
+    events: Map<String, suspend (String) -> String>
 ) {
     val eventSubscriptionHolder = EventSubscriptionHolder()
     add(eventSubscriptionHolder)
@@ -48,10 +45,8 @@ fun ArcAgents.serve(
             }
 
             post("/events/*") {
-                val agent = getAgentByName("latin-agent") as ConversationAgent
-                val module = modulesManager.getModuleByEndpoint(call.request.uri.substringAfterLast("/events/"))
-                    ?: error("Could not find module")
-                val result = agent.runModule(module, input = call.receiveText()).getOrThrow()
+                val event = call.request.uri.substringAfterLast("/events/")
+                val result = events[event]!!(call.receiveText())
                 call.respondText(result)
             }
         }

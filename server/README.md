@@ -10,5 +10,5 @@ Start server with:
 
 Example curl:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/validate -d '{"event": "value", "error": true}' 
+curl -X POST http://0.0.0.0:8080/events/ping -d '{"event": "value", "status": up}' 
 ```
