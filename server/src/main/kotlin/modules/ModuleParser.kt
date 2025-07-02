@@ -27,11 +27,16 @@ fun parseModuleFile(file: File): LatinModule {
 }
 
 
-private val outputSymbolsRegex = "-><(.*?)>".toRegex(RegexOption.IGNORE_CASE)
+private val outputSymbolsRegex = "@respond\\s+(\\S+)".toRegex(RegexOption.IGNORE_CASE)
+private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)
 
 fun String.findOutputSymbols(): Set<String> {
     val outputSymbols = outputSymbolsRegex.findAll(this).map { it.groupValues[1] }
         .filter { it.isNotBlank() }
+        .filter { !it.startsWith("\"") } // TODO
         .toSet()
-    return outputSymbols
+    val quotedOutputSymbols = quotedOutputSymbolsRegex.findAll(this).map { it.groupValues[1] }
+        .filter { it.isNotBlank() }
+        .toSet()
+    return outputSymbols + quotedOutputSymbols
 }

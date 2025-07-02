@@ -1,5 +1,5 @@
 
 
 When a @ping event arrives:
-  • If status is UP, return -><OK>.
-  • Otherwise, return -><NOT_OK>.
+  • If status is UP, return @respond OK.
+  • Otherwise, return @respond NOT_OK.
