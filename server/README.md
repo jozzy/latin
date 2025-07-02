@@ -8,7 +8,12 @@ Start server with:
 ./gradlew run
 ```
 
-Example curl:
+Test validate events:
  ```bash
 curl -X POST http://0.0.0.0:8080/events/ping -d '{"event": "value", "status": up}' 
+```
+
+Test chat:
+ ```bash
+curl -X POST http://0.0.0.0:8080/events/chat -d 'Hi, how are you?'
 ```
