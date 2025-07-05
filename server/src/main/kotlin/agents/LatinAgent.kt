@@ -8,9 +8,7 @@ import org.eclipse.lmos.arc.agents.llm.ChatCompletionSettings
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.findOutputSymbols
 
-
 fun AgentDefinitionContext.buildLatinAgent() {
-
     agent {
         name = "latin-init-agent"
         model { "gpt-4o" }
@@ -28,7 +26,7 @@ fun AgentDefinitionContext.buildLatinAgent() {
         
          ## Instructions
          - Read the following instructions carefully and setup the workflow using the available functions.
-         - Define task using natural language.
+         - Define tasks using natural language.
          
          Instructions:
          ${module.instructions}
@@ -59,6 +57,8 @@ fun AgentDefinitionContext.buildLatinAgent() {
          ## Instructions
          - Read the following instructions carefully and perform the tasks as described.
          - Use the input provided by the user as input for the tasks.
+         - Use the handover_flow function whenever a handover is specified and return the result.
+         - Use register_event_callback whenever an event or trigger is specified using the @ symbol.
          
          Instructions:
          ${module.instructions}

@@ -1,6 +1,8 @@
 package org.latin.server.modules
 
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LatinModule(
     val name: String,
     val version: String,

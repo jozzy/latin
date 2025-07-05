@@ -3,7 +3,6 @@ package org.latin.server
 import org.junit.jupiter.api.Test
 import org.latin.server.modules.findOutputSymbols
 
-
 class FindOutputSymbolsTest {
 
     @Test
@@ -22,5 +21,4 @@ class FindOutputSymbolsTest {
         val expectedSymbols = setOf("symbol1", "symbol2", "symbol3", "symbol4", "a long symbol name")
         assert(foundSymbols == expectedSymbols) { "Expected $expectedSymbols but found $foundSymbols" }
     }
-
 }

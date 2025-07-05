@@ -22,11 +22,10 @@ fun main() {
     val modules = ModulesManager()
     val events = ConcurrentHashMap<String, suspend (String) -> String>()
 
-    agents(functions = { buildBasicFunctions(events) }) { buildLatinAgent() }.also {
+    agents(functions = { buildBasicFunctions(modules, events) }) { buildLatinAgent() }.also {
         CoroutineScope(Job()).launch {
             val agent = it.getAgentByName("latin-init-agent") as ConversationAgent
             modules.loadModules(File("../modules"), agent)
         }
     }.serve(modules, events = events)
 }
-

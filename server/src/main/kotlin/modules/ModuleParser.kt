@@ -3,7 +3,6 @@ package org.latin.server.modules
 import org.slf4j.LoggerFactory
 import java.io.File
 
-
 private val log = LoggerFactory.getLogger("ModuleParser")
 
 private val endpointRegex = "<ENDPOINT:(.*?)>".toRegex(RegexOption.IGNORE_CASE)
@@ -17,15 +16,14 @@ fun parseModuleFile(file: File): LatinModule {
         .filter { it.isNotBlank() }
         .toSet()
     return LatinModule(
-        name = file.name,
-        version = "TODO",
+        name = file.nameWithoutExtension,
+        version = "1.0.0",
         description = "TODO",
         endpoints = endpoints,
         instructions = content.replace(endpointRegex, "").trim(),
         outputs = outputSymbols.takeIf { it.isNotEmpty() },
     )
 }
-
 
 private val outputSymbolsRegex = "@respond\\s+(\\S+)".toRegex(RegexOption.IGNORE_CASE)
 private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)

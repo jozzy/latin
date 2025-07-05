@@ -9,18 +9,20 @@ import io.ktor.server.engine.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
 import org.eclipse.lmos.arc.agents.agent.health
 import org.eclipse.lmos.arc.graphql.inbound.EventSubscriptionHolder
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
+import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModulesManager
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
     wait: Boolean = true,
     port: Int? = null,
-    events: Map<String, suspend (String) -> String>
+    events: Map<String, suspend (String) -> String>,
 ) {
     val eventSubscriptionHolder = EventSubscriptionHolder()
     add(eventSubscriptionHolder)
@@ -44,6 +46,19 @@ fun ArcAgents.serve(
                 call.respondText(json.encodeToString(health), Json, if (health.ok) OK else ServiceUnavailable)
             }
 
+            get("/status") {
+                val json = Json {
+                    prettyPrint = true
+                }.encodeToString(
+                    Status(
+                        status = "OK",
+                        event = events.keys.toList(),
+                        modules = modulesManager.list()
+                    )
+                )
+                call.respondText(json)
+            }
+
             post("/events/*") {
                 val event = call.request.uri.substringAfterLast("/events/")
                 val result = events[event]!!(call.receiveText())
@@ -52,3 +67,6 @@ fun ArcAgents.serve(
         }
     }.start(wait = wait)
 }
+
+@Serializable
+data class Status(val status: String, val event: List<String>, val modules: List<LatinModule>)
