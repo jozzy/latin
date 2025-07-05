@@ -6,11 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.agents.AgentProvider
 import org.eclipse.lmos.arc.agents.ConversationAgent
-import org.eclipse.lmos.arc.agents.conversation.Conversation
-import org.eclipse.lmos.arc.agents.conversation.UserMessage
-import org.eclipse.lmos.arc.agents.conversation.latest
 import org.eclipse.lmos.arc.agents.dsl.FunctionDefinitionContext
-import org.eclipse.lmos.arc.agents.dsl.extensions.breakToAgent
 import org.eclipse.lmos.arc.agents.dsl.extensions.breakWith
 import org.eclipse.lmos.arc.agents.dsl.extensions.info
 import org.eclipse.lmos.arc.agents.dsl.get
@@ -18,13 +14,12 @@ import org.eclipse.lmos.arc.agents.getAgentByName
 import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.core.onFailure
 import org.latin.server.modules.LatinModule
-import org.latin.server.modules.ModulesManager
-import org.latin.server.modules.runModule
+import org.latin.server.modules.ModuleExecutor
 import java.util.concurrent.ConcurrentHashMap
 
 fun FunctionDefinitionContext.buildBasicFunctions(
-    modulesManager: ModulesManager,
-    eventListeners: ConcurrentHashMap<String, suspend (String) -> String>
+    moduleExecutor: ModuleExecutor,
+    eventListeners: ConcurrentHashMap<String, suspend (String) -> String>,
 ) {
     function(
         name = "set_timer",
@@ -38,7 +33,8 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         CoroutineScope(Job()).launch {
             delay(duration.toString().toLong() * 1000)
             val agent = get<AgentProvider>().getAgentByName("latin-agent") as ConversationAgent
-            val result = agent.runModule(
+            val result = moduleExecutor.runModule(
+                agent,
                 LatinModule(
                     name = "TimerModule",
                     version = "1.0",
@@ -46,7 +42,6 @@ fun FunctionDefinitionContext.buildBasicFunctions(
                     endpoints = setOf("timer"),
                     instructions = task.toString(),
                 ),
-                modulesManager = modulesManager,
             ).onFailure {
                 error("Failed to handle timer task: $it")
             }.getOrThrow().also {
@@ -68,7 +63,8 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         info("Register event callback: $event with task: $task")
         eventListeners[event.toString().substringAfter("@").trim()] = { input ->
             val agent = get<AgentProvider>().getAgentByName("latin-agent") as ConversationAgent
-            val result = agent.runModule(
+            val result = moduleExecutor.runModule(
+                agent,
                 input = input,
                 module = LatinModule(
                     name = "EventCallbackModule",
@@ -77,7 +73,6 @@ fun FunctionDefinitionContext.buildBasicFunctions(
                     endpoints = setOf(event.toString()),
                     instructions = task.toString(),
                 ),
-                modulesManager = modulesManager,
             ).onFailure {
                 error("Failed to handle event callback: $it")
             }.getOrThrow().also {
@@ -99,5 +94,16 @@ fun FunctionDefinitionContext.buildBasicFunctions(
     ) { (name, input) ->
         info("Handing over to module: $name with input: $input")
         breakWith("<HANDOVER:$name>")
+    }
+
+    function(
+        name = "add_numbers",
+        description = "Adds two numbers together.",
+        params = types(
+            integer("numberA", "The first number to add."),
+            integer("numberA", "The second number to add."),
+        ),
+    ) { (a, b) ->
+        "${(a as Int) + (b as Int)}"
     }
 }

@@ -8,6 +8,7 @@ import org.eclipse.lmos.arc.agents.agents
 import org.eclipse.lmos.arc.agents.getAgentByName
 import org.latin.server.agents.buildBasicFunctions
 import org.latin.server.agents.buildLatinAgent
+import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -20,12 +21,13 @@ fun main() {
     // System.setProperty("OPENAI_API_KEY", "****")
 
     val modules = ModulesManager()
+    val moduleExecutor = ModuleExecutor(modules)
     val events = ConcurrentHashMap<String, suspend (String) -> String>()
 
-    agents(functions = { buildBasicFunctions(modules, events) }) { buildLatinAgent() }.also {
+    agents(functions = { buildBasicFunctions(moduleExecutor, events) }) { buildLatinAgent() }.also {
         CoroutineScope(Job()).launch {
             val agent = it.getAgentByName("latin-init-agent") as ConversationAgent
-            modules.loadModules(File("../modules"), agent)
+            modules.loadModules(File("../modules"), agent, moduleExecutor)
         }
     }.serve(modules, events = events)
 }

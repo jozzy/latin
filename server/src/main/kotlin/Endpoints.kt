@@ -47,16 +47,15 @@ fun ArcAgents.serve(
             }
 
             get("/status") {
-                val json = Json {
-                    prettyPrint = true
-                }.encodeToString(
-                    Status(
-                        status = "OK",
-                        event = events.keys.toList(),
-                        modules = modulesManager.list()
+                call.respondText(
+                    json.encodeToString(
+                        Status(
+                            status = if (modulesManager.isReady) "READY" else "LOADING",
+                            event = events.keys.toList(),
+                            modules = modulesManager.list(),
+                        ),
                     )
                 )
-                call.respondText(json)
             }
 
             post("/events/*") {
