@@ -10,6 +10,15 @@ import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.core.map
 import org.slf4j.LoggerFactory
 
+/**
+ * Executes modules in the context of a given `ConversationAgent`.
+ *
+ * This class manages the execution of modules, detects handover instructions
+ * in the agent's output, and delegates to other modules if necessary.
+ *
+ * @constructor Creates a new `ModuleExecutor` with the specified `ModulesManager`.
+ * @param modulesManager Manager for available modules.
+ */
 class ModuleExecutor(
     private val modulesManager: ModulesManager,
 ) {
@@ -28,7 +37,7 @@ class ModuleExecutor(
                     .filter { it.isNotBlank() }
                     .toSet()
                 if (handovers.isNotEmpty()) {
-                    log.info("Handover detected: $handovers")
+                    log.info("Handover detected: $handovers in content: $content")
                     val module = modulesManager.getModuleByName(handovers.first())!!
                     runModule(agent, input = input, module = module).getOrThrow()
                 } else {

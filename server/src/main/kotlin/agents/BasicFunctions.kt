@@ -13,8 +13,11 @@ import org.eclipse.lmos.arc.agents.dsl.get
 import org.eclipse.lmos.arc.agents.getAgentByName
 import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.core.onFailure
+import org.latin.server.agents.Agents.RUN_MODUL_AGENT
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModuleExecutor
+import org.latin.server.modules.extractHandovers
+import org.latin.server.modules.findOutputSymbols
 import java.util.concurrent.ConcurrentHashMap
 
 fun FunctionDefinitionContext.buildBasicFunctions(
@@ -32,7 +35,7 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         info("Setting a timer for $duration seconds to perform task: $task")
         CoroutineScope(Job()).launch {
             delay(duration.toString().toLong() * 1000)
-            val agent = get<AgentProvider>().getAgentByName("latin-agent") as ConversationAgent
+            val agent = get<AgentProvider>().getAgentByName(RUN_MODUL_AGENT) as ConversationAgent
             val result = moduleExecutor.runModule(
                 agent,
                 LatinModule(
@@ -57,12 +60,12 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         description = "Registers a callback for an event",
         params = types(
             string("event", "The name of the event to register for. Denoted with a '@', for example @event_name"),
-            string("task", "The task to perform when the event occurs"),
+            string("task", "The task to perform when the event occurs. Should be in natural language."),
         ),
     ) { (event, task) ->
         info("Register event callback: $event with task: $task")
         eventListeners[event.toString().substringAfter("@").trim()] = { input ->
-            val agent = get<AgentProvider>().getAgentByName("latin-agent") as ConversationAgent
+            val agent = get<AgentProvider>().getAgentByName(RUN_MODUL_AGENT) as ConversationAgent
             val result = moduleExecutor.runModule(
                 agent,
                 input = input,
@@ -72,6 +75,8 @@ fun FunctionDefinitionContext.buildBasicFunctions(
                     description = "Module to handle event callbacks",
                     endpoints = setOf(event.toString()),
                     instructions = task.toString(),
+                    handovers = task.toString().extractHandovers(),
+                    outputs = task.toString().findOutputSymbols(),
                 ),
             ).onFailure {
                 error("Failed to handle event callback: $it")
@@ -86,7 +91,7 @@ fun FunctionDefinitionContext.buildBasicFunctions(
 
     function(
         name = "handover_flow",
-        description = "Hands the task over to another flow.",
+        description = "Hands the task over to another flow. A handover is denoted with the # symbol, for example #flow_name",
         params = types(
             string("name", "The name of the flow to handover the task to"),
             string("input", "A summary of the customers problem."),
@@ -101,7 +106,7 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         description = "Adds two numbers together.",
         params = types(
             integer("numberA", "The first number to add."),
-            integer("numberA", "The second number to add."),
+            integer("numberB", "The second number to add."),
         ),
     ) { (a, b) ->
         "${(a as Int) + (b as Int)}"

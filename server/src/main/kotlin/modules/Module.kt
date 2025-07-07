@@ -10,4 +10,5 @@ data class LatinModule(
     val endpoints: Set<String>,
     val instructions: String,
     val outputs: Set<String>? = null,
+    val handovers: Set<String> = emptySet(),
 )

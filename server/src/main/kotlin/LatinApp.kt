@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.agents.ConversationAgent
 import org.eclipse.lmos.arc.agents.agents
 import org.eclipse.lmos.arc.agents.getAgentByName
+import org.latin.server.agents.Agents
 import org.latin.server.agents.buildBasicFunctions
 import org.latin.server.agents.buildLatinAgent
 import org.latin.server.modules.ModuleExecutor
@@ -26,7 +27,7 @@ fun main() {
 
     agents(functions = { buildBasicFunctions(moduleExecutor, events) }) { buildLatinAgent() }.also {
         CoroutineScope(Job()).launch {
-            val agent = it.getAgentByName("latin-init-agent") as ConversationAgent
+            val agent = it.getAgentByName(Agents.INITIALISE_MODUL_AGENT) as ConversationAgent
             modules.loadModules(File("../modules"), agent, moduleExecutor)
         }
     }.serve(modules, events = events)

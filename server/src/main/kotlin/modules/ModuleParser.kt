@@ -4,15 +4,23 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 private val log = LoggerFactory.getLogger("ModuleParser")
-
 private val endpointRegex = "<ENDPOINT:(.*?)>".toRegex(RegexOption.IGNORE_CASE)
+private val outputSymbolsRegex = "@respond\\s+([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
+private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)
+private val handoverRegex = "#([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
 
+/**
+ * Parses a module file and creates a `LatinModule` object.
+ *
+ * Reads the content of the given file, extracts endpoints, output symbols, and handover instructions,
+ * and returns a corresponding `LatinModule` with the extracted information.
+ *
+ * @param file The module file to parse.
+ * @return The created `LatinModule` object with the extracted data.
+ */
 fun parseModuleFile(file: File): LatinModule {
     val content = file.readText()
     val endpoints = endpointRegex.findAll(content).map { it.groupValues[1] }
-        .filter { it.isNotBlank() }
-        .toSet()
-    val outputSymbols = outputSymbolsRegex.findAll(content).map { it.groupValues[1] }
         .filter { it.isNotBlank() }
         .toSet()
     return LatinModule(
@@ -21,12 +29,10 @@ fun parseModuleFile(file: File): LatinModule {
         description = "TODO",
         endpoints = endpoints,
         instructions = content.replace(endpointRegex, "").trim(),
-        outputs = outputSymbols.takeIf { it.isNotEmpty() },
+        outputs = content.findOutputSymbols().takeIf { it.isNotEmpty() },
+        handovers = content.extractHandovers(),
     )
 }
-
-private val outputSymbolsRegex = "@respond\\s+(\\S+)".toRegex(RegexOption.IGNORE_CASE)
-private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)
 
 fun String.findOutputSymbols(): Set<String> {
     val outputSymbols = outputSymbolsRegex.findAll(this).map { it.groupValues[1] }
@@ -37,4 +43,10 @@ fun String.findOutputSymbols(): Set<String> {
         .filter { it.isNotBlank() }
         .toSet()
     return outputSymbols + quotedOutputSymbols
+}
+
+fun String.extractHandovers(): Set<String> {
+    return handoverRegex.findAll(this).map { it.groupValues[1] }
+        .filter { it.isNotBlank() }
+        .toSet()
 }

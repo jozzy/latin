@@ -54,7 +54,7 @@ fun ArcAgents.serve(
                             event = events.keys.toList(),
                             modules = modulesManager.list(),
                         ),
-                    )
+                    ),
                 )
             }
 

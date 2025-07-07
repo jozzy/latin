@@ -1,4 +1,4 @@
 
-when @customer message contains "charged twice":
-  • Hand over to flow charge_twice
+when @customer contains "charged twice":
+  • Hand over to flow #charge_twice
   • Otherwise return "OK"
