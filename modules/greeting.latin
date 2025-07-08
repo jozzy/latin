@@ -1,3 +1,4 @@
+/// Description: This module handles greeting interactions in Latin.
 
 When a @chat event arrives:
   • If the users greets return @respond "Hello, I am MAI!".

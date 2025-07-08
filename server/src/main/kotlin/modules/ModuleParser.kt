@@ -26,9 +26,9 @@ fun parseModuleFile(file: File): LatinModule {
     return LatinModule(
         name = file.nameWithoutExtension,
         version = "1.0.0",
-        description = "TODO",
+        description = content.extractTripleSlashLines(),
         endpoints = endpoints,
-        instructions = content.replace(endpointRegex, "").trim(),
+        instructions = content.replace(endpointRegex, "").removeComments().trim(),
         outputs = content.findOutputSymbols().takeIf { it.isNotEmpty() },
         handovers = content.extractHandovers(),
     )
@@ -50,3 +50,16 @@ fun String.extractHandovers(): Set<String> {
         .filter { it.isNotBlank() }
         .toSet()
 }
+
+/**
+ * Extracts all lines starting with '///', removes the prefix, and returns the text.
+ *
+ * @return A string with all extracted lines, each without the '///' prefix, joined by line breaks.
+ */
+fun String.extractTripleSlashLines(): String = lines()
+    .filter { it.trimStart().startsWith("///") }
+    .joinToString("\n") { it.trimStart().removePrefix("///").trimStart() }
+
+fun String.removeComments(): String = lines()
+    .filter { !it.trimStart().startsWith("//") }
+    .joinToString("\n")
