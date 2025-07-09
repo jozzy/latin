@@ -37,10 +37,15 @@ fun FunctionDefinitionContext.buildBasicFunctions(
                 agent,
                 LatinModule(
                     name = "TimerModule",
-                    version = "1.0",
+                    useCase = "timer_task",
                     description = "Module to handle timer tasks",
-                    endpoints = setOf("timer"),
+                    version = "1.0.0",
+                    startCondition = null,
+                    inputParameters = emptySet(),
                     instructions = task.toString(),
+                    outputs = null,
+                    channels = setOf("http"),
+                    endpoints = setOf("timer")
                 ),
             ).onFailure {
                 error("Failed to handle timer task: $it")
@@ -68,10 +73,15 @@ fun FunctionDefinitionContext.buildBasicFunctions(
                 input = input,
                 module = LatinModule(
                     name = "EventCallbackModule",
-                    version = "1.0",
+                    useCase = "event_callback",
                     description = "Module to handle event callbacks",
-                    endpoints = setOf(event.toString()),
+                    version = "1.0.0",
+                    startCondition = "when $event event arrives",
+                    inputParameters = setOf("input"),
                     instructions = task.toString(),
+                    outputs = null,
+                    channels = setOf("http"),
+                    endpoints = setOf(event.toString())
                 ),
             ).onFailure {
                 error("Failed to handle event callback: $it")
@@ -97,13 +107,36 @@ fun FunctionDefinitionContext.buildBasicFunctions(
     }
 
     function(
-        name = "add_numbers",
-        description = "Adds two numbers together.",
+        name = "call_module",
+        description = "Calls another Latin module with parameters",
         params = types(
-            integer("numberA", "The first number to add."),
-            integer("numberA", "The second number to add."),
+            string("module_name", "The name of the module to call"),
+            string("parameters", "JSON string of parameters to pass to the module"),
         ),
-    ) { (a, b) ->
-        "${(a as Int) + (b as Int)}"
+    ) { (moduleName, parameters) ->
+        info("Calling module: $moduleName with parameters: $parameters")
+        
+        val agent = get<AgentProvider>().getAgentByName("latin-agent") as ConversationAgent
+        val result = moduleExecutor.runModule(
+            agent,
+            input = parameters.toString(),
+            module = LatinModule(
+                name = "ModuleCallWrapper",
+                useCase = "call_$moduleName",
+                description = "Wrapper for calling $moduleName",
+                version = "1.0.0",
+                startCondition = null,
+                inputParameters = emptySet(),
+                instructions = "Call module $moduleName with the provided parameters",
+                outputs = null,
+                channels = setOf("http"),
+                endpoints = emptySet()
+            ),
+        ).onFailure {
+            error("Failed to call module: $it")
+        }.getOrThrow()
+        
+        info("Module call result: $result")
+        result
     }
 }

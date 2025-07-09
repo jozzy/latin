@@ -1,0 +1,11 @@
+UseCase: fetch_offer_for_industry
+Description: Fetches the most relevant offer for a specific industry from the offer database
+
+Start when industry is received:
+  • Query the Notion database for offers matching the industry
+  • Rank offers by relevance and conversion potential
+  • Select the top offer for the industry
+  • Format the offer with compelling copy and benefits
+  • @respond with offer_text
+
+End. 

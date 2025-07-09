@@ -1,0 +1,12 @@
+import org.eclipse.lmos.arc.core.Success
+
+UseCase: find_leads
+Description: Finds potential leads based on target keywords
+
+Start when target_keywords are received:
+  • Use LinkedIn API or search tools to find profiles matching the keywords
+  • Filter profiles by relevance and engagement potential
+  • Extract basic information: name, company, title, LinkedIn URL
+  • @respond with raw_leads
+
+End. 

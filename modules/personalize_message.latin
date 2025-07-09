@@ -1,0 +1,11 @@
+UseCase: personalize_message
+Description: Creates a personalized message for a lead based on their profile and an offer
+
+Start when lead and offer_text are received:
+  • Analyze the lead's company, title, and industry
+  • Match the offer to their potential needs
+  • Generate a personalized message using AI
+  • Include relevant details: company name, role relevance, offer benefits
+  • @respond with email_body
+
+End. 

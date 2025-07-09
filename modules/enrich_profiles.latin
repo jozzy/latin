@@ -1,0 +1,11 @@
+UseCase: enrich_profiles
+Description: Enriches lead profiles with additional information like email, company details, and industry
+
+Start when raw_leads are received:
+  • Use email enrichment tools to find valid email addresses
+  • Look up company information and industry data
+  • Add website, headcount, and company size information
+  • Filter out leads with incomplete or invalid data
+  • @respond with enriched_profiles
+
+End. 

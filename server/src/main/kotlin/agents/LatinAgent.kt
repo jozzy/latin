@@ -16,17 +16,35 @@ fun AgentDefinitionContext.buildLatinAgent() {
         tools {
             +"set_timer"
             +"register_event_callback"
+            +"call_module"
         }
         prompt {
             val module = get<LatinModule>()
-            info("Processing module: ${module.name}")
+            info("Processing module: ${module.name} (UseCase: ${module.useCase})")
+            
+            val parametersInfo = if (module.inputParameters.isNotEmpty()) {
+                "\n\nExpected Parameters: ${module.inputParameters.joinToString(", ")}"
+            } else ""
+            
+            val startConditionInfo = if (module.startCondition != null) {
+                "\n\nStart Condition: ${module.startCondition}"
+            } else ""
+            
             """
          ## Goal
          You are a workflow engine that can execute tasks based on user input.
         
+         ## Module Information
+         - Name: ${module.name}
+         - UseCase: ${module.useCase}
+         - Description: ${module.description ?: "No description provided"}
+         - Version: ${module.version}$parametersInfo$startConditionInfo
+         
          ## Instructions
          - Read the following instructions carefully and setup the workflow using the available functions.
          - Define tasks using natural language.
+         - Use the call_module function to invoke other modules when needed.
+         - Use register_event_callback for event-driven workflows.
          
          Instructions:
          ${module.instructions}
@@ -48,17 +66,38 @@ fun AgentDefinitionContext.buildLatinAgent() {
         }
         prompt {
             val module = get<LatinModule>()
-            info("Processing module: ${module.name}")
+            info("Processing module: ${module.name} (UseCase: ${module.useCase})")
             setLocal("module", module)
+            
+            val parametersInfo = if (module.inputParameters.isNotEmpty()) {
+                "\n\nExpected Parameters: ${module.inputParameters.joinToString(", ")}"
+            } else ""
+            
+            val startConditionInfo = if (module.startCondition != null) {
+                "\n\nStart Condition: ${module.startCondition}"
+            } else ""
+            
+            val outputsInfo = if (module.outputs != null) {
+                "\n\nExpected Outputs: ${module.outputs.joinToString(", ")}"
+            } else ""
+            
             """
          ## Goal
          You are a workflow engine that can execute tasks based on user input.
         
+         ## Module Information
+         - Name: ${module.name}
+         - UseCase: ${module.useCase}
+         - Description: ${module.description ?: "No description provided"}
+         - Version: ${module.version}$parametersInfo$startConditionInfo$outputsInfo
+         
          ## Instructions
          - Read the following instructions carefully and perform the tasks as described.
          - Use the input provided by the user as input for the tasks.
          - Use the handover_flow function whenever a handover is specified and return the result.
          - Use register_event_callback whenever an event or trigger is specified using the @ symbol.
+         - Use call_module to invoke other Latin modules when needed.
+         - When responding, use @respond format if specified in the instructions.
          
          Instructions:
          ${module.instructions}

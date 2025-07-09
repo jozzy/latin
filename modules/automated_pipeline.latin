@@ -1,0 +1,15 @@
+UseCase: automated_pipeline
+Description: Complete automated outreach pipeline from lead generation to email sending
+
+Start when target_keywords are received:
+  • @call find_leads with target_keywords → raw_leads
+  • @call enrich_profiles with raw_leads → enriched_profiles
+  
+  For each lead in enriched_profiles:
+    • @call fetch_offer_for_industry with lead.industry → offer_text
+    • @call personalize_message with lead and offer_text → email_body
+    • @call send_email with lead.email and email_body
+  
+  @respond "Campaign executed for ${enriched_profiles.count} leads."
+
+End. 

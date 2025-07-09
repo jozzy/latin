@@ -1,0 +1,7 @@
+UseCase: send_email
+Description: Sends an email to a recipient with the provided content
+
+when @evts received:
+    • Hand over to flow charge_twice
+      • Otherwise return "OK"
+End. 
