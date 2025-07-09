@@ -1,6 +1,7 @@
 package org.latin.server
 
 import io.ktor.http.ContentType.Application.Json
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.server.application.*
@@ -12,14 +13,20 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
+import org.eclipse.lmos.arc.agents.ConversationAgent
 import org.eclipse.lmos.arc.agents.agent.health
+import org.eclipse.lmos.arc.agents.getAgentByName
+import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.graphql.inbound.EventSubscriptionHolder
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
+import org.latin.server.agents.Agents
 import org.latin.server.modules.LatinModule
+import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
+    moduleExecutor: ModuleExecutor,
     wait: Boolean = true,
     port: Int? = null,
     events: Map<String, suspend (String) -> String>,
@@ -62,6 +69,14 @@ fun ArcAgents.serve(
                 val event = call.request.uri.substringAfterLast("/events/")
                 val result = events[event]!!(call.receiveText())
                 call.respondText(result)
+            }
+
+            post("/modules/*") {
+                val moduleName = call.request.uri.substringAfterLast("/modules/")
+                val module = modulesManager.getModuleByName(moduleName)!!
+                val agent = getAgentByName(Agents.RUN_MODUL_AGENT) as ConversationAgent
+                val result = moduleExecutor.runModule(agent, module, call.receiveText())
+                call.respondText(result.getOrThrow())
             }
         }
     }.start(wait = wait)

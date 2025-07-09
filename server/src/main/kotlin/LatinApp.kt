@@ -30,5 +30,5 @@ fun main() {
             val agent = it.getAgentByName(Agents.INITIALISE_MODUL_AGENT) as ConversationAgent
             modules.loadModules(File("../modules"), agent, moduleExecutor)
         }
-    }.serve(modules, events = events)
+    }.serve(modules, events = events, moduleExecutor = moduleExecutor)
 }
