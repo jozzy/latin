@@ -23,6 +23,11 @@ Test complaint:
 curl -X POST http://0.0.0.0:8080/events/customer -d 'I am not happy with the service. I am being charged double.'
 ```
 
+Test Email:
+ ```bash
+curl -X POST http://0.0.0.0:8080/modules/email -d ''
+```
+
 Status:
  ```bash
 curl -X GET http://0.0.0.0:8080/status 

@@ -27,17 +27,15 @@ class ModulesManager {
                 log.info("Loading module: ${moduleFile.name}")
                 val module = parseModuleFile(moduleFile)
                 modules[moduleFile.nameWithoutExtension] = module
+                moduleExecutor.runModule(agent, module = module).getOrThrow()
                 log.info("Loaded module: $module")
-                if (module.endpoints.isEmpty()) {
-                    moduleExecutor.runModule(agent, module = module).getOrThrow()
-                }
             }
         }
         ready.set(true)
     }
 
     fun getModuleByEndpoint(endpoint: String): LatinModule? {
-        return modules.values.firstOrNull { endpoint in it.endpoints }
+        return modules.values.firstOrNull { endpoint in it.triggers }
     }
 
     fun getModuleByName(name: String): LatinModule? {

@@ -1,7 +1,6 @@
 package org.latin.server
 
 import io.ktor.http.ContentType.Application.Json
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.server.application.*
@@ -23,6 +22,7 @@ import org.latin.server.agents.Agents
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
+import java.util.concurrent.ConcurrentHashMap
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
@@ -38,6 +38,7 @@ fun ArcAgents.serve(
         prettyPrint = true
         ignoreUnknownKeys = true
         isLenient = true
+        encodeDefaults = true
     }
 
     embeddedServer(CIO, port = port ?: EnvConfig.serverPort) {

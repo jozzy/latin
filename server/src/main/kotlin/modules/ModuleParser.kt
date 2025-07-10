@@ -4,10 +4,14 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 private val log = LoggerFactory.getLogger("ModuleParser")
-private val endpointRegex = "<ENDPOINT:(.*?)>".toRegex(RegexOption.IGNORE_CASE)
+private val triggersRegex = "@trigger\\s+([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
 private val outputSymbolsRegex = "@respond\\s+([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
 private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)
-private val handoverRegex = "#([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
+private val linkRegex = "#([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
+
+private val toolsRegex = "@tool\\s+([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
+
+private val keywords = setOf("tool", "respond")
 
 /**
  * Parses a module file and creates a `LatinModule` object.
@@ -18,19 +22,17 @@ private val handoverRegex = "#([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
  * @param file The module file to parse.
  * @return The created `LatinModule` object with the extracted data.
  */
-fun parseModuleFile(file: File): LatinModule {
-    val content = file.readText()
-    val endpoints = endpointRegex.findAll(content).map { it.groupValues[1] }
-        .filter { it.isNotBlank() }
-        .toSet()
+fun parseModuleFile(file: File): LatinModule = parseModule(file.nameWithoutExtension, file.readText())
+fun parseModule(name: String, content: String): LatinModule {
     return LatinModule(
-        name = file.nameWithoutExtension,
+        name = name,
         version = "1.0.0",
         description = content.extractTripleSlashLines(),
-        endpoints = endpoints,
-        instructions = content.replace(endpointRegex, "").removeComments().trim(),
+        triggers = triggersRegex.extractFrom(content, filter = keywords),
+        instructions = content.removeComments().trim(),
         outputs = content.findOutputSymbols().takeIf { it.isNotEmpty() },
-        handovers = content.extractHandovers(),
+        handovers = linkRegex.extractFrom(content),
+        tools = toolsRegex.extractFrom(content),
     )
 }
 
@@ -45,9 +47,10 @@ fun String.findOutputSymbols(): Set<String> {
     return outputSymbols + quotedOutputSymbols
 }
 
-fun String.extractHandovers(): Set<String> {
-    return handoverRegex.findAll(this).map { it.groupValues[1] }
+private fun Regex.extractFrom(content: String, filter: Set<String> = emptySet()): Set<String> {
+    return findAll(content).map { it.groupValues[1] }
         .filter { it.isNotBlank() }
+        .filter { !filter.contains(it) }
         .toSet()
 }
 

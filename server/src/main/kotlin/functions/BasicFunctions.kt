@@ -1,4 +1,4 @@
-package org.latin.server.agents
+package org.latin.server.functions
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -14,10 +14,8 @@ import org.eclipse.lmos.arc.agents.getAgentByName
 import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.core.onFailure
 import org.latin.server.agents.Agents.RUN_MODUL_AGENT
-import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModuleExecutor
-import org.latin.server.modules.extractHandovers
-import org.latin.server.modules.findOutputSymbols
+import org.latin.server.modules.parseModule
 import java.util.concurrent.ConcurrentHashMap
 
 fun FunctionDefinitionContext.buildBasicFunctions(
@@ -38,12 +36,9 @@ fun FunctionDefinitionContext.buildBasicFunctions(
             val agent = get<AgentProvider>().getAgentByName(RUN_MODUL_AGENT) as ConversationAgent
             val result = moduleExecutor.runModule(
                 agent,
-                LatinModule(
-                    name = "TimerModule",
-                    version = "1.0",
+                parseModule("TimerModule", task.toString()).copy(
                     description = "Module to handle timer tasks",
-                    endpoints = setOf("timer"),
-                    instructions = task.toString(),
+                    triggers = setOf("timer"),
                 ),
             ).onFailure {
                 error("Failed to handle timer task: $it")
@@ -57,26 +52,21 @@ fun FunctionDefinitionContext.buildBasicFunctions(
 
     function(
         name = "register_event_callback",
-        description = "Registers a callback for an event",
+        description = "Registers a callback for an event.",
         params = types(
-            string("event", "The name of the event to register for. Denoted with a '@', for example @event_name"),
+            string("event", "The name of the event to register for. Denoted with a '@trigger', for example '@trigger event_name'. Important: An event name can only be registered once."),
             string("task", "The task to perform when the event occurs. Should be in natural language."),
         ),
     ) { (event, task) ->
         info("Register event callback: $event with task: $task")
-        eventListeners[event.toString().substringAfter("@").trim()] = { input ->
+        eventListeners[event.toString().substringAfter("@trigger ").trim()] = { input ->
             val agent = get<AgentProvider>().getAgentByName(RUN_MODUL_AGENT) as ConversationAgent
             val result = moduleExecutor.runModule(
                 agent,
                 input = input,
-                module = LatinModule(
-                    name = "EventCallbackModule",
-                    version = "1.0",
+                module = parseModule("EventCallbackModule", task.toString()).copy(
                     description = "Module to handle event callbacks",
-                    endpoints = setOf(event.toString()),
-                    instructions = task.toString(),
-                    handovers = task.toString().extractHandovers(),
-                    outputs = task.toString().findOutputSymbols(),
+                    triggers = setOf(event.toString()),
                 ),
             ).onFailure {
                 error("Failed to handle event callback: $it")

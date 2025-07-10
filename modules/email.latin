@@ -1,0 +1,10 @@
+
+
+Set a @timer for 10 seconds that should trigger the following command:
+ - Read the latest email using the @tool read_email.
+ - If the email is important use the @tool mark_important to mark it as important.
+
+ Important emails are:
+    - Emails from the boss
+    - Emails with the subject "Urgent"
+    - Emails where a request has been processed

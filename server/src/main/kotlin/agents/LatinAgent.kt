@@ -31,8 +31,8 @@ fun AgentDefinitionContext.buildLatinAgent() {
         model { "gpt-4o" }
         settings = { ChatCompletionSettings(temperature = 0.0, seed = 42) }
         tools {
-            +"set_timer"
             +"register_event_callback"
+            +"set_timer"
         }
         prompt {
             val module = get<LatinModule>()
@@ -43,7 +43,8 @@ fun AgentDefinitionContext.buildLatinAgent() {
         
          ## Instructions
          - Read the following instructions carefully and setup the workflow using the available functions.
-         - Define tasks using natural language.
+         - Always define tasks using natural language.
+         - Optimize task so that an LLM can understand and execute it.
          
          Instructions:
          ${module.instructions}
@@ -55,8 +56,9 @@ fun AgentDefinitionContext.buildLatinAgent() {
         name = Agents.RUN_MODUL_AGENT
         model { "gpt-4o" }
         tools {
-            if (get<LatinModule>().handovers.isNotEmpty()) +"handover_flow"
-            +"add_numbers"
+            val module = get<LatinModule>()
+            if (module.handovers.isNotEmpty()) +"handover_flow"
+            module.tools.forEach { +it }
         }
         settings = { ChatCompletionSettings(temperature = 0.0, seed = 42) }
         filterOutput {
@@ -78,7 +80,6 @@ fun AgentDefinitionContext.buildLatinAgent() {
          - Read the following instructions carefully and perform the tasks as described.
          - Use the input provided by the user as input for the tasks.
          - Use the handover_flow function whenever a handover is specified with # and return the result.
-         - Use register_event_callback whenever an event or trigger is specified using the @ symbol.
          
          Instructions:
          ${module.instructions}

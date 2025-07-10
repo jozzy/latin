@@ -1,5 +1,5 @@
 
 
-When a @ping event arrives:
+When a @trigger ping event arrives:
   • If status is UP, return @respond OK.
   • Otherwise, return @respond NOT_OK.
