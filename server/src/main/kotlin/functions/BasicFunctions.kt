@@ -59,7 +59,7 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         ),
     ) { (event, task) ->
         info("Register event callback: $event with task: $task")
-        eventListeners[event.toString().substringAfter("@trigger ").trim()] = { input ->
+        eventListeners[event.toString().substringAfter("@trigger ").substringBefore(" ").trim()] = { input ->
             val agent = get<AgentProvider>().getAgentByName(RUN_MODUL_AGENT) as ConversationAgent
             val result = moduleExecutor.runModule(
                 agent,
@@ -88,7 +88,7 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         ),
     ) { (name, input) ->
         info("Handing over to module: $name with input: $input")
-        breakWith("<HANDOVER:$name>")
+        breakWith("<HANDOVER:$name>", reason = "Handing over to module $name")
     }
 
     function(

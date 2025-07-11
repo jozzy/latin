@@ -22,7 +22,6 @@ import org.latin.server.agents.Agents
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
-import java.util.concurrent.ConcurrentHashMap
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
