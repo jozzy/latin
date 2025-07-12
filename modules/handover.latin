@@ -1,4 +1,4 @@
 
-when @trigger customer contains "charged twice":
+when @trigger customer event arrives:
   • Hand over to flow #charge_twice
   • Otherwise return "OK"

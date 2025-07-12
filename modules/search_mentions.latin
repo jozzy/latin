@@ -1,0 +1,8 @@
+/// Description: Searches for product mentions across various platforms.
+
+When @trigger search_mentions arrives:
+  • Use the @tool web_search to find mentions of "OurProduct"
+  • Use the @tool social_media_search to find social media mentions
+  • Use the @tool news_search to find news articles mentioning the product
+  • Return all findings as structured data
+  • If more than 10 mentions found, hand over to flow #high_volume_alert 

@@ -17,11 +17,11 @@ fun FunctionDefinitionContext.buildEmailFunctions(
         """
            Email Id: AQ1234
            Email from: John Doe
-           Subject: Request Processed
+           Subject: CUSTOMER COMPLAINT 
            Content:
            Dear Mr.Smith,
            
-           We received your request and have processed it successfully.
+           We received your COMPLAINT and have processed it successfully.
            
            Best regards,
            The Support Team
