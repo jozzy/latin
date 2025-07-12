@@ -10,6 +10,7 @@ import org.latin.server.agents.Agents
 import org.latin.server.agents.buildLatinAgent
 import org.latin.server.functions.buildBasicFunctions
 import org.latin.server.functions.buildEmailFunctions
+import org.latin.server.functions.buildMockFunctions
 import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
 import java.io.File
@@ -29,6 +30,7 @@ fun main() {
     agents(functions = {
         buildBasicFunctions(moduleExecutor, events)
         buildEmailFunctions(moduleExecutor, events)
+        buildMockFunctions(moduleExecutor, events)
     }) {
         buildLatinAgent()
     }.also {
