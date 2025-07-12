@@ -1,16 +1,13 @@
 package org.latin.server.modules
 
-import org.eclipse.lmos.arc.agents.AgentFailedException
 import org.eclipse.lmos.arc.agents.ConversationAgent
-import org.eclipse.lmos.arc.agents.conversation.AssistantMessage
-import org.eclipse.lmos.arc.agents.conversation.latest
-import org.eclipse.lmos.arc.agents.conversation.toConversation
-import org.eclipse.lmos.arc.core.Result
+import org.eclipse.lmos.arc.agents.dsl.extensions.info
+import org.eclipse.lmos.arc.agents.dsl.get
 import org.eclipse.lmos.arc.core.getOrThrow
-import org.eclipse.lmos.arc.core.map
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ModulesManager {
 
@@ -18,31 +15,34 @@ class ModulesManager {
 
     private val modules = ConcurrentHashMap<String, LatinModule>()
 
-    suspend fun loadModules(folder: File, agent: ConversationAgent) {
+    private val ready = AtomicBoolean(false)
+    val isReady: Boolean
+        get() = ready.get()
+
+    suspend fun loadModules(folder: File, agent: ConversationAgent, moduleExecutor: ModuleExecutor) {
         log.info("Loading modules from : ${folder.absoluteFile}")
         val moduleFiles = folder.listFiles() ?: return
         moduleFiles.forEach { moduleFile ->
             if (moduleFile.isFile) {
                 log.info("Loading module: ${moduleFile.name}")
                 val module = parseModuleFile(moduleFile)
-                modules[moduleFile.name] = module
+                modules[moduleFile.nameWithoutExtension] = module
+                moduleExecutor.runModule(agent, module = module).getOrThrow()
                 log.info("Loaded module: $module")
-                if (module.endpoints.isEmpty()) {
-                    agent.runModule(module = module).getOrThrow()
-                }
             }
         }
+        ready.set(true)
     }
 
     fun getModuleByEndpoint(endpoint: String): LatinModule? {
-        return modules.values.firstOrNull { endpoint in it.endpoints }
+        return modules.values.firstOrNull { endpoint in it.triggers }
     }
-}
 
-suspend fun ConversationAgent.runModule(
-    module: LatinModule,
-    input: String = "",
-): Result<String, AgentFailedException> {
-    return this.execute(input.toConversation(), context = setOf(module))
-        .map { it.latest<AssistantMessage>()?.content ?: "" }
+    fun getModuleByName(name: String): LatinModule? {
+        return modules[name]
+    }
+
+    fun list(): List<LatinModule> {
+        return modules.values.toList()
+    }
 }
