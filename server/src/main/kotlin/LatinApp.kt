@@ -13,6 +13,7 @@ import org.latin.server.functions.buildEmailFunctions
 import org.latin.server.functions.buildMockFunctions
 import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
+import org.latin.server.modules.storage.InMemoryExecutionStorage
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -24,7 +25,8 @@ fun main() {
     // System.setProperty("OPENAI_API_KEY", "****")
 
     val modules = ModulesManager()
-    val moduleExecutor = ModuleExecutor(modules)
+    val executionStorage = InMemoryExecutionStorage()
+    val moduleExecutor = ModuleExecutor(modules, executionStorage)
     val events = ConcurrentHashMap<String, suspend (String) -> String>()
 
     agents(functions = {
@@ -38,5 +40,10 @@ fun main() {
             val agent = it.getAgentByName(Agents.INITIALISE_MODUL_AGENT) as ConversationAgent
             modules.loadModules(File("../modules"), agent, moduleExecutor)
         }
-    }.serve(modules, events = events, moduleExecutor = moduleExecutor)
+    }.serve(
+        modules,
+        events = events,
+        moduleExecutor = moduleExecutor,
+        executionStorage = executionStorage
+    )
 }

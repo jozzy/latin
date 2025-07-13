@@ -8,6 +8,8 @@ import org.eclipse.lmos.arc.agents.conversation.toConversation
 import org.eclipse.lmos.arc.core.Result
 import org.eclipse.lmos.arc.core.getOrThrow
 import org.eclipse.lmos.arc.core.map
+import org.latin.server.modules.storage.ExecutionData
+import org.latin.server.modules.storage.ExecutionStorage
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory
  */
 class ModuleExecutor(
     private val modulesManager: ModulesManager,
+    private val executionStorage: ExecutionStorage,
 ) {
     private val handover = "<HANDOVER:(.*?)>".toRegex(RegexOption.IGNORE_CASE)
     private val log = LoggerFactory.getLogger(ModulesManager::class.java)
@@ -41,6 +44,14 @@ class ModuleExecutor(
                     val module = modulesManager.getModuleByName(handovers.first())!!
                     runModule(agent, input = input, module = module).getOrThrow()
                 } else {
+                    executionStorage.save(
+                        ExecutionData(
+                            module = module,
+                            agent = agent.name,
+                            output = content,
+                            input = input,
+                        )
+                    )
                     content
                 }
             }

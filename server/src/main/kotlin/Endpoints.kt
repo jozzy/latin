@@ -22,10 +22,12 @@ import org.latin.server.agents.Agents
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
+import org.latin.server.modules.storage.ExecutionStorage
 
 fun ArcAgents.serve(
     modulesManager: ModulesManager,
     moduleExecutor: ModuleExecutor,
+    executionStorage: ExecutionStorage,
     wait: Boolean = true,
     port: Int? = null,
     events: Map<String, suspend (String) -> String>,
@@ -61,6 +63,14 @@ fun ArcAgents.serve(
                             event = events.keys.toList(),
                             modules = modulesManager.list(),
                         ),
+                    ),
+                )
+            }
+
+            get("/runs") {
+                call.respondText(
+                    json.encodeToString(
+                        executionStorage.fetch(100).getOrThrow()
                     ),
                 )
             }
