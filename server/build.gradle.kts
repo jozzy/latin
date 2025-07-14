@@ -10,7 +10,7 @@ application {
 }
 
 dependencies {
-    val arcVersion = "0.137.0"
+    val arcVersion = "0.141.0-M3"
 
     // Arc
     implementation("org.eclipse.lmos:arc-azure-client:$arcVersion")

@@ -9,7 +9,7 @@ private val outputSymbolsRegex = "@respond\\s+([^\\s.]+)".toRegex(RegexOption.IG
 private val quotedOutputSymbolsRegex = "@respond\\s+\"(.+?)\"".toRegex(RegexOption.IGNORE_CASE)
 private val linkRegex = "#([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
 
-private val toolsRegex = "@tool\\s+([^\\s.]+)".toRegex(RegexOption.IGNORE_CASE)
+private val toolsRegex = "@tool\\s+([A-Za-z0-9_-]+)".toRegex(RegexOption.IGNORE_CASE)
 
 private val keywords = setOf("tool", "respond")
 
