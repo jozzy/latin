@@ -2,6 +2,7 @@ package org.latin.server.modules
 
 import org.eclipse.lmos.arc.agents.AgentFailedException
 import org.eclipse.lmos.arc.agents.ConversationAgent
+import org.eclipse.lmos.arc.agents.conversation.AIAgentHandover
 import org.eclipse.lmos.arc.agents.conversation.AssistantMessage
 import org.eclipse.lmos.arc.agents.conversation.latest
 import org.eclipse.lmos.arc.agents.conversation.toConversation
@@ -24,8 +25,8 @@ import org.slf4j.LoggerFactory
 class ModuleExecutor(
     private val modulesManager: ModulesManager,
     private val executionStorage: ExecutionStorage,
+    private val events: Map<String, suspend (String) -> String>
 ) {
-    private val handover = "<HANDOVER:(.*?)>".toRegex(RegexOption.IGNORE_CASE)
     private val log = LoggerFactory.getLogger(ModulesManager::class.java)
 
     suspend fun runModule(
@@ -34,25 +35,26 @@ class ModuleExecutor(
         input: String = "",
     ): Result<String, AgentFailedException> {
         return agent.execute(input.toConversation(), context = setOf(module))
-            .map { it.latest<AssistantMessage>()?.content ?: "" }
-            .map { content ->
-                val handovers = handover.findAll(content).map { it.groupValues[1] }
-                    .filter { it.isNotBlank() }
-                    .toSet()
-                if (handovers.isNotEmpty()) {
-                    log.info("Handover detected: $handovers in content: $content")
-                    val module = modulesManager.getModuleByName(handovers.first())!!
-                    runModule(agent, input = input, module = module).getOrThrow()
+            .map { conversation ->
+                val output = conversation.latest<AssistantMessage>()?.content ?: ""
+                val handover = conversation.classification.let { if (it is AIAgentHandover) it.name else null }
+
+                if (handover != null) {
+                    log.info("Handover detected: $handover in content: $output")
+                    events[handover]?.let { command -> command(output) } ?: run {
+                        val module = modulesManager.getModuleByName(handover)!!
+                        runModule(agent, input = input, module = module).getOrThrow()
+                    }
                 } else {
                     executionStorage.save(
                         ExecutionData(
                             module = module,
                             agent = agent.name,
-                            output = content,
+                            output = output,
                             input = input,
                         )
                     )
-                    content
+                    output
                 }
             }
     }

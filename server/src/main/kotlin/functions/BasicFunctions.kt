@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.agents.AgentProvider
 import org.eclipse.lmos.arc.agents.ConversationAgent
+import org.eclipse.lmos.arc.agents.conversation.AIAgentHandover
 import org.eclipse.lmos.arc.agents.dsl.FunctionDefinitionContext
 import org.eclipse.lmos.arc.agents.dsl.extensions.breakWith
 import org.eclipse.lmos.arc.agents.dsl.extensions.info
@@ -54,7 +55,10 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         name = "register_event_callback",
         description = "Registers a callback for an event.",
         params = types(
-            string("event", "The name of the event to register for. Denoted with a '@trigger', for example '@trigger event_name'. Important: An event name can only be registered once."),
+            string(
+                "event",
+                "The name of the event to register for. Denoted with a '@trigger', for example '@trigger event_name'. Important: An event name can only be registered once."
+            ),
             string("task", "The task to perform when the event occurs. Should be in natural language."),
         ),
     ) { (event, task) ->
@@ -84,11 +88,15 @@ fun FunctionDefinitionContext.buildBasicFunctions(
         description = "Hands the task over to another flow. A handover is denoted with the # symbol, for example #flow_name",
         params = types(
             string("name", "The name of the flow to handover the task to"),
-            string("input", "A summary of the customers problem."),
+            string("input", "The input to pass to the flow"),
         ),
     ) { (name, input) ->
         info("Handing over to module: $name with input: $input")
-        breakWith("<HANDOVER:$name>", reason = "Handing over to module $name")
+        breakWith(
+            input.toString(),
+            reason = "Handing over to module $name",
+            classification = AIAgentHandover(name.toString())
+        )
     }
 
     function(

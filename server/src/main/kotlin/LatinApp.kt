@@ -26,14 +26,15 @@ fun main() {
 
     val modules = ModulesManager()
     val executionStorage = InMemoryExecutionStorage()
-    val moduleExecutor = ModuleExecutor(modules, executionStorage)
     val events = ConcurrentHashMap<String, suspend (String) -> String>()
+    val moduleExecutor = ModuleExecutor(modules, executionStorage, events)
 
-    agents(functions = {
-        buildBasicFunctions(moduleExecutor, events)
-        buildEmailFunctions(moduleExecutor, events)
-        buildMockFunctions(moduleExecutor, events)
-    }) {
+    agents(
+        functions = {
+            buildBasicFunctions(moduleExecutor, events)
+            buildEmailFunctions(moduleExecutor, events)
+            buildMockFunctions(moduleExecutor, events)
+        }) {
         buildLatinAgent()
     }.also {
         CoroutineScope(Job()).launch {
