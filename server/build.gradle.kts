@@ -6,11 +6,11 @@ group = "com.example"
 version = "0.0.1"
 
 application {
-    mainClass = "org.latin.server.AgentServerKt"
+    mainClass = "org.latin.server.LatinAppKt"
 }
 
 dependencies {
-    val arcVersion = "0.137.0"
+    val arcVersion = "0.141.0-M3"
 
     // Arc
     implementation("org.eclipse.lmos:arc-azure-client:$arcVersion")
