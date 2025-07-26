@@ -3,7 +3,7 @@
 Set a @timer for 10 seconds that should trigger the following command:
  - Read the latest email using the @tool read_email.
  - If the email is important use the @tool mark_important to mark it as important.
- - Handover to flow #charge_twice
+ - Handover to flows #charge_twice
 
 
  Important emails are:

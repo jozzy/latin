@@ -5,6 +5,6 @@ Set a @timer for 5 seconds that should trigger the following command:
   • Summarize the findings using the @tool summarize_insights  
   • Generate a report using the @tool create_report
   • Send the report via email using the @tool send_email
-  • Hand over to flow #mention_alert if critical mentions are found
+  • Hand over to flows #mention_alert if critical mentions are found
 
 // The workflow should run every Monday at 9:00 AM and track mentions of "OurProduct" across social media and news sites.

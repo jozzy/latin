@@ -14,13 +14,15 @@ import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.getValue
 import kotlin.time.measureTime
 
-class ConnectEventsToModules(private val modulesFolder: File) : KoinComponent {
-
-    private val modules: ModulesManager by inject()
-    private val moduleExecutor: ModuleExecutor by inject()
-    private val eventHub: EventHub by inject()
+class ConnectEventsToModules(
+    private val modulesFolder: File,
+    private val modules: ModulesManager,
+    private val moduleExecutor: ModuleExecutor,
+    private val eventHub: EventHub,
+) {
 
     private val scope = CoroutineScope(SupervisorJob())
     private val log = LoggerFactory.getLogger(javaClass)

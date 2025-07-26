@@ -33,9 +33,10 @@ import kotlin.time.Duration.Companion.seconds
  * Watches a directory for file changes and reloads scripts when changes are detected.
  */
 class ModuleHotReload(
+    private val modulesManager: ModulesManager,
     private val fallbackInterval: Duration = 3.seconds,
-) : Closeable, KoinComponent {
-    private val modulesManager: ModulesManager by inject()
+) : Closeable {
+
     private val log = LoggerFactory.getLogger(this.javaClass)
 
     private val fileWatcher = lazy {

@@ -3,5 +3,5 @@
 When @trigger high_volume_alert arrives:
   • Use the @tool analyze_trend to determine if this is a viral moment
   • Use the @tool notify_team to alert the social media team
-  • Hand over to flow #mention_alert if negative sentiment detected
+  • Hand over to flows #mention_alert if negative sentiment detected
   • Otherwise, return "High volume detected - monitoring closely" 

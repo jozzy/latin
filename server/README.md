@@ -12,37 +12,37 @@ SSE Event endpoint: http://0.0.0.0:8080/runs
 
 Test validate events:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/ping -d '{"event": "value", "status": up}' 
+curl -X POST http://0.0.0.0:8080/trigger/ping -d '{"event": "value", "status": up}' 
 ```
 
 Test chat:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/chat -d 'Hi, how are you?'
+curl -X POST http://0.0.0.0:8080/trigger/chat -d 'Hi, how are you?'
 ```
 
 Test complaint:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/customer -d 'I am not happy with the service. I am being charged double.'
+curl -X POST http://0.0.0.0:8080/trigger/customer -d 'I am not happy with the service. I am being charged double.'
 ```
 
 Test Search Mentions:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/search_mentions -d  'search for OurProduct mentions across all platforms'
+curl -X POST http://0.0.0.0:8080/trigger/search_mentions -d  'search for OurProduct mentions across all platforms'
 ```
 
 Test product monitoring:
  ```bash
-curl -X POST http://localhost:8080/modules/product_monitoring 
+curl -X POST http://localhost:8080/trigger/product_monitoring 
 ```
 
 Test Email:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/send_email -d '{report: "Stocks are going up!"}'
+curl -X POST http://0.0.0.0:8080/trigger/send_email -d '{report: "Stocks are going up!"}'
 ```
 
 Test Greeting:
  ```bash
-curl -X POST http://0.0.0.0:8080/events/greeting -d ''
+curl -X POST http://0.0.0.0:8080/trigger/greeting -d ''
 ```
 
 Status:

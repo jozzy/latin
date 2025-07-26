@@ -9,10 +9,10 @@ val modulesFolder = File("../modules")
 val setupModule = module {
 
     single(createdAtStart = true) {
-        ModuleHotReload().start(modulesFolder)
+        ModuleHotReload(get()).start(modulesFolder)
     }
 
     single(createdAtStart = true) {
-        ConnectEventsToModules(modulesFolder).connect()
+        ConnectEventsToModules(modulesFolder, get(), get(), get()).connect()
     }
 }
