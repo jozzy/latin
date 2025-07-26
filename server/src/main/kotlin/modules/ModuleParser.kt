@@ -24,16 +24,59 @@ private val keywords = setOf("tool", "respond")
  */
 fun parseModuleFile(file: File): LatinModule = parseModule(file.nameWithoutExtension, file.readText())
 fun parseModule(name: String, content: String): LatinModule {
+    var description = ""
+    var instructions = ""
+    var output = ""
+    val outputSymbols = mutableSetOf<String>()
+    val triggers = mutableSetOf<String>()
+    var mode = ReadMode.NONE
+
+    content.split("\n").forEach {
+        val line = it.trim()
+
+        if (line.startsWith("//")) return@forEach
+
+        if (line.startsWith("///")) {
+            description += line.removePrefix("//").trim() + "\n"
+        } else if (line.startsWith("@trigger")) {
+            triggers += triggersRegex.extractFrom(line)
+        } else if (line.startsWith("@instructions")) {
+            mode = ReadMode.INSTRUCTIONS
+        } else if (line.startsWith("@output")) {
+            mode = ReadMode.OUTPUT
+        } else {
+            when (mode) {
+                ReadMode.INSTRUCTIONS -> instructions += "$line\n"
+                ReadMode.OUTPUT -> {
+                    output += "$line\n"
+                    outputSymbols += line.findOutputSymbols()
+                }
+
+                else -> {
+                    // TODO
+                }
+            }
+        }
+    }
+
     return LatinModule(
         name = name,
         version = "1.0.0",
-        description = content.extractTripleSlashLines(),
-        triggers = triggersRegex.extractFrom(content, filter = keywords),
-        instructions = content.removeComments().trim(),
-        outputs = content.findOutputSymbols().takeIf { it.isNotEmpty() },
+        description = description,
+        triggers = triggers,
+        instructions = instructions,
+        output = output,
+        outputSymbols = outputSymbols,
         handovers = linkRegex.extractFrom(content),
         tools = toolsRegex.extractFrom(content),
     )
+}
+
+enum class ReadMode {
+    INSTRUCTIONS,
+    OUTPUT,
+    VERIFICATION,
+    NONE,
 }
 
 fun String.findOutputSymbols(): Set<String> {

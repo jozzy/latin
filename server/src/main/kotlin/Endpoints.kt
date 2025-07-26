@@ -9,32 +9,32 @@ import io.ktor.server.engine.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sse.*
+import io.ktor.sse.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
-import org.eclipse.lmos.arc.agents.ConversationAgent
 import org.eclipse.lmos.arc.agents.agent.health
-import org.eclipse.lmos.arc.agents.getAgentByName
-import org.eclipse.lmos.arc.core.getOrThrow
-import org.eclipse.lmos.arc.graphql.inbound.EventSubscriptionHolder
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
-import org.latin.server.agents.Agents
+import org.latin.server.events.EventHub
+import org.latin.server.events.TriggerEvent
 import org.latin.server.modules.LatinModule
-import org.latin.server.modules.ModuleExecutor
 import org.latin.server.modules.ModulesManager
-import org.latin.server.modules.storage.ExecutionStorage
 
+/**
+ * Starts the Ktor server with the specified modules and event hub.
+ *
+ * @param modules The modules manager containing the loaded modules.
+ * @param eventHub The event hub for publishing and subscribing to events.
+ * @param wait If true, the server will block the current thread until it is stopped.
+ * @param port The port on which the server will listen. Defaults to `EnvConfig.serverPort`.
+ */
 fun ArcAgents.serve(
-    modulesManager: ModulesManager,
-    moduleExecutor: ModuleExecutor,
-    executionStorage: ExecutionStorage,
+    modules: ModulesManager,
+    eventHub: EventHub,
     wait: Boolean = true,
     port: Int? = null,
-    events: Map<String, suspend (String) -> String>,
 ) {
-    val eventSubscriptionHolder = EventSubscriptionHolder()
-    add(eventSubscriptionHolder)
-
     val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
@@ -43,6 +43,8 @@ fun ArcAgents.serve(
     }
 
     embeddedServer(CIO, port = port ?: EnvConfig.serverPort) {
+        install(SSE)
+
         install(RoutingRoot) {
             // Health endpoint
             get("/health") {
@@ -59,38 +61,29 @@ fun ArcAgents.serve(
                 call.respondText(
                     json.encodeToString(
                         Status(
-                            status = if (modulesManager.isReady) "READY" else "LOADING",
-                            event = events.keys.toList(),
-                            modules = modulesManager.list(),
+                            status = if (modules.isReady) "READY" else "LOADING",
+                            triggers = modules.list().flatMap { it.triggers }.toSet(),
+                            modules = modules.list(),
                         ),
                     ),
                 )
             }
 
-            get("/runs") {
-                call.respondText(
-                    json.encodeToString(
-                        executionStorage.fetch(100).getOrThrow()
-                    ),
-                )
+            sse("/runs") {
+                eventHub.flow.collect { event ->
+                    log.info("Relaying event: ${event.id} to sse clients")
+                    send(ServerSentEvent(id = event.id, data = event.output, event = event::class.simpleName))
+                }
             }
 
             post("/events/*") {
                 val event = call.request.uri.substringAfterLast("/events/")
-                val result = events[event]!!(call.receiveText())
+                val result = eventHub.publishTrigger(TriggerEvent(event, input = call.receiveText()))
                 call.respondText(result)
-            }
-
-            post("/modules/*") {
-                val moduleName = call.request.uri.substringAfterLast("/modules/")
-                val module = modulesManager.getModuleByName(moduleName)!!
-                val agent = getAgentByName(Agents.RUN_MODUL_AGENT) as ConversationAgent
-                val result = moduleExecutor.runModule(agent, module, call.receiveText())
-                call.respondText(result.getOrThrow())
             }
         }
     }.start(wait = wait)
 }
 
 @Serializable
-data class Status(val status: String, val event: List<String>, val modules: List<LatinModule>)
+data class Status(val status: String, val triggers: Set<String>, val modules: List<LatinModule>)

@@ -1,9 +1,8 @@
-package org.latin.server.modules.storage
+package org.latin.server.events.storage
 
 import org.eclipse.lmos.arc.core.Failure
 import org.eclipse.lmos.arc.core.Result
 import org.eclipse.lmos.arc.core.Success
-
 
 /**
  * In-Memory-Implementierung von [ExecutionStorage].

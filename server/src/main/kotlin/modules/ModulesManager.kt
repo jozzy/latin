@@ -1,9 +1,5 @@
 package org.latin.server.modules
 
-import org.eclipse.lmos.arc.agents.ConversationAgent
-import org.eclipse.lmos.arc.agents.dsl.extensions.info
-import org.eclipse.lmos.arc.agents.dsl.get
-import org.eclipse.lmos.arc.core.getOrThrow
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -19,23 +15,24 @@ class ModulesManager {
     val isReady: Boolean
         get() = ready.get()
 
-    suspend fun loadModules(folder: File, agent: ConversationAgent, moduleExecutor: ModuleExecutor) {
+    suspend fun loadModules(folder: File) {
         log.info("Loading modules from : ${folder.absoluteFile}")
         val moduleFiles = folder.listFiles() ?: return
         moduleFiles.forEach { moduleFile ->
-            if (moduleFile.isFile) {
-                log.info("Loading module: ${moduleFile.name}")
-                val module = parseModuleFile(moduleFile)
-                modules[moduleFile.nameWithoutExtension] = module
-                moduleExecutor.runModule(agent, module = module).getOrThrow()
-                log.info("Loaded module: $module")
-            }
+            if (moduleFile.isFile) loadModule(moduleFile)
         }
         ready.set(true)
     }
 
-    fun getModuleByEndpoint(endpoint: String): LatinModule? {
-        return modules.values.firstOrNull { endpoint in it.triggers }
+    fun loadModule(moduleFile: File) {
+        log.info("Loading module: ${moduleFile.name}")
+        val module = parseModuleFile(moduleFile)
+        modules[moduleFile.nameWithoutExtension] = module
+        log.debug("Loaded module: $module")
+    }
+
+    fun getModuleByTrigger(trigger: String): List<LatinModule> {
+        return modules.values.filter { trigger in it.triggers }
     }
 
     fun getModuleByName(name: String): LatinModule? {

@@ -2,16 +2,8 @@ package org.latin.server.functions
 
 import org.eclipse.lmos.arc.agents.dsl.FunctionDefinitionContext
 import org.eclipse.lmos.arc.agents.dsl.extensions.info
-import org.latin.server.modules.ModuleExecutor
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.component1
 
-
-fun FunctionDefinitionContext.buildMockFunctions(
-    moduleExecutor: ModuleExecutor,
-    eventListeners: ConcurrentHashMap<String, suspend (String) -> String>,
-) {
-
+fun FunctionDefinitionContext.buildMockFunctions() {
 // Product Monitoring Mock Functions
     function(
         name = "web_search",
@@ -156,5 +148,4 @@ fun FunctionDefinitionContext.buildMockFunctions(
         info("Notifying $team: $message")
         "Notification sent to $team: $message"
     }
-
 }

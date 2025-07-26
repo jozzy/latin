@@ -1,4 +1,4 @@
-package org.latin.server.modules.storage
+package org.latin.server.events.storage
 
 import kotlinx.serialization.Serializable
 import org.eclipse.lmos.arc.core.Result
@@ -28,12 +28,11 @@ interface ExecutionStorage {
      * @return A Result containing a list of ExecutionData or an AgentFailedException if the operation fails.
      */
     suspend fun fetch(limit: Int): Result<Executions, StorageException>
-
 }
 
 @Serializable
 data class ExecutionData(
-    val agent: String,
+    val id: String,
     val module: LatinModule,
     val input: String,
     val output: String,

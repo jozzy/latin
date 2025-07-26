@@ -10,7 +10,7 @@ application {
 }
 
 dependencies {
-    val arcVersion = "0.141.0-M3"
+    val arcVersion = "0.143.0"
 
     // Arc
     implementation("org.eclipse.lmos:arc-azure-client:$arcVersion")
@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.jdk8)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.server.sse)
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.0")

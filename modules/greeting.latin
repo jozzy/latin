@@ -1,5 +1,9 @@
-/// Description: This module handles greeting interactions in Latin.
-
-When a @trigger chat event arrives executing the following command:
-  • If the users greets, return @respond "Hello, I am MAI!".
-  • Otherwise, @respond "How may I help you?".
+ /// My first module 
+           
+@trigger greeting
+           
+@instructions
+Respond with "My name is Peter, and I am here to assist you with your queries."
+           
+@output
+Return a friendly greeting message.

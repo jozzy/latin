@@ -57,13 +57,12 @@ fun AgentDefinitionContext.buildLatinAgent() {
         model { "gpt-4o" }
         tools {
             val module = get<LatinModule>()
-            if (module.handovers.isNotEmpty()) +"handover_flow"
             module.tools.forEach { +it }
         }
         settings = { ChatCompletionSettings(temperature = 0.0, seed = 42) }
         filterOutput {
             val module = get<LatinModule>()
-            if (module.outputs != null) {
+            if (module.outputSymbols != null && module.outputSymbols.isNotEmpty()) {
                 info("Filtering output symbols for $message")
                 message = message.findOutputSymbols().firstOrNull() ?: "Error"
             }
@@ -79,10 +78,13 @@ fun AgentDefinitionContext.buildLatinAgent() {
          ## Instructions
          - Read the following instructions carefully and perform the tasks as described.
          - Use the input provided by the user as input for the tasks.
-         - Use the handover_flow function whenever a handover is specified with # and return the result.
          
          Instructions:
          ${module.instructions}
+         
+         ### Output
+         ${module.output}
+        
         """
         }
     }

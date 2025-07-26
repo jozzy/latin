@@ -7,9 +7,10 @@ data class LatinModule(
     val name: String,
     val version: String,
     val description: String,
+    val output: String,
     val triggers: Set<String>,
     val instructions: String,
-    val outputs: Set<String>? = null,
+    val outputSymbols: Set<String>? = null,
     val handovers: Set<String> = emptySet(),
     val tools: Set<String> = emptySet(),
 )

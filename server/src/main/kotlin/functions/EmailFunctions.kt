@@ -2,13 +2,8 @@ package org.latin.server.functions
 
 import org.eclipse.lmos.arc.agents.dsl.FunctionDefinitionContext
 import org.eclipse.lmos.arc.agents.dsl.extensions.info
-import org.latin.server.modules.ModuleExecutor
-import java.util.concurrent.ConcurrentHashMap
 
-fun FunctionDefinitionContext.buildEmailFunctions(
-    moduleExecutor: ModuleExecutor,
-    eventListeners: ConcurrentHashMap<String, suspend (String) -> String>,
-) {
+fun FunctionDefinitionContext.buildEmailFunctions() {
     function(
         name = "read_email",
         description = "Reads an email from the inbox",
