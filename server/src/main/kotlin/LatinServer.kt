@@ -1,12 +1,14 @@
 package org.latin.server
 
 import io.ktor.http.ContentType.Application.Json
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -52,6 +54,12 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
 
         install(SSE)
 
+        install(CORS) {
+            anyHost()
+            allowMethod(HttpMethod.Get)
+            allowMethod(HttpMethod.Post)
+        }
+
         install(RoutingRoot) {
             // Health endpoint
             get("/health") {
@@ -76,6 +84,13 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
                             modules = modules.list(),
                         ),
                     ),
+                )
+            }
+
+            get("/modules") {
+                val modules: ModulesManager by injected()
+                call.respondText(
+                    json.encodeToString(modules.list()),
                 )
             }
 

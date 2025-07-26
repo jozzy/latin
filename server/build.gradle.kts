@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.jdk8)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.sse)
 
     // Koin
