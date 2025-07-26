@@ -16,6 +16,7 @@ import kotlinx.serialization.json.Json
 import org.eclipse.lmos.arc.agents.ArcAgents
 import org.eclipse.lmos.arc.agents.agent.health
 import org.eclipse.lmos.arc.server.ktor.EnvConfig
+import org.koin.ktor.ext.inject
 import org.latin.server.events.EventHub
 import org.latin.server.events.TriggerEvent
 import org.latin.server.modules.LatinModule
@@ -29,12 +30,7 @@ import org.latin.server.modules.ModulesManager
  * @param wait If true, the server will block the current thread until it is stopped.
  * @param port The port on which the server will listen. Defaults to `EnvConfig.serverPort`.
  */
-fun ArcAgents.serve(
-    modules: ModulesManager,
-    eventHub: EventHub,
-    wait: Boolean = true,
-    port: Int? = null,
-) {
+fun ArcAgents.serve(wait: Boolean = true, port: Int? = null) {
     val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
@@ -43,6 +39,9 @@ fun ArcAgents.serve(
     }
 
     embeddedServer(CIO, port = port ?: EnvConfig.serverPort) {
+        val modules: ModulesManager by inject()
+        val eventHub: EventHub by inject()
+
         install(SSE)
 
         install(RoutingRoot) {

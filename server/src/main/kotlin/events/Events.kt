@@ -17,3 +17,8 @@ data class TriggerResultEvent(
     val id: String,
     val duration: Duration,
 ) : Event by BaseEvent()
+
+data class FlowTriggeredEvent(
+    val id: String,
+    val input: String,
+) : Event by BaseEvent()

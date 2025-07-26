@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.core.closeWith
 import org.eclipse.lmos.arc.core.onFailure
 import org.eclipse.lmos.arc.core.result
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.latin.server.modules.ModulesManager
 import org.slf4j.LoggerFactory
 import java.io.Closeable
@@ -31,9 +33,9 @@ import kotlin.time.Duration.Companion.seconds
  * Watches a directory for file changes and reloads scripts when changes are detected.
  */
 class ModuleHotReload(
-    private val modulesManager: ModulesManager,
     private val fallbackInterval: Duration = 3.seconds,
-) : Closeable {
+) : Closeable, KoinComponent {
+    private val modulesManager: ModulesManager by inject()
     private val log = LoggerFactory.getLogger(this.javaClass)
 
     private val fileWatcher = lazy {
@@ -46,7 +48,7 @@ class ModuleHotReload(
         }
     }
 
-    fun start(directory: File) {
+    fun start(directory: File): ModuleHotReload {
         log.info("Starting hot-reload of agents from ${directory.absoluteFile}(${directory.listFiles()?.size})")
         fileWatcher.value.watch(directory) { event ->
             result<Unit, Exception> {
@@ -67,6 +69,7 @@ class ModuleHotReload(
                 }
             }.onFailure { logError(it) }
         }
+        return this
     }
 
     private fun logError(ex: Exception) {
