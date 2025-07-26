@@ -49,3 +49,14 @@ Status:
  ```bash
 curl -X GET http://0.0.0.0:8080/status 
 ```
+
+
+Create a flow:
+ ```bash
+curl -X POST http://0.0.0.0:8080/flows -d '{ "id": "1", "name": "example_flow", "description": "An example flow","steps": ["write_poem","translate_to_french"]}'
+```
+
+Trigger a flow:
+ ```bash
+curl -X POST http://0.0.0.0:8080/start/1
+```

@@ -95,8 +95,15 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
             post("/flows") {
                 val flowRepository: FlowRepository by injected()
                 val flow = json.decodeFromString<LatinFlow>(call.receiveText())
+                log.info("Created flow: ${flow.id}")
                 flowRepository.store(flow)
                 call.respond(Created)
+            }
+
+            get("/flows") {
+                val flowRepository: FlowRepository by injected()
+                val flows = flowRepository.fetchAll()
+                call.respondText(json.encodeToString(flows), Json, OK)
             }
 
             post("/start/*") {

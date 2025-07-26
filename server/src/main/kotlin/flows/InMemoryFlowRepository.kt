@@ -17,4 +17,8 @@ class InMemoryFlowRepository : FlowRepository {
     override suspend fun fetch(id: String): LatinFlow? {
         return flows[id]
     }
+
+    override suspend fun fetchAll(): Flows {
+        return Flows(flows.values.toList())
+    }
 }

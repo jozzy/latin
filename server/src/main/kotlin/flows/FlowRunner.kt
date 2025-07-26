@@ -9,7 +9,7 @@ class FlowRunner(val eventHub: EventHub) {
     suspend fun run(flow: LatinFlow, input: String): String {
         eventHub.publish(FlowTriggeredEvent(id = flow.id, input = input))
         var currentInput = input
-        flow.events.forEach { event ->
+        flow.steps.forEach { event ->
             currentInput = eventHub.publishTrigger(
                 TriggerEvent(id = flow.id, event = event, input = currentInput),
             )
