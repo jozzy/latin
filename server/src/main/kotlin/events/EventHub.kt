@@ -29,7 +29,7 @@ class EventHub : EventPublisher, EventListeners {
         eventHandler.add(object : EventHandler<TriggerResultEvent> {
             override fun onEvent(event: TriggerResultEvent) {
                 log.info("Received TriggerResultEvent: $event")
-                val emitted = handlers[event.id]?.tryEmit(event.output)
+                val emitted = handlers[event.correlationId]?.tryEmit(event.output)
                 log.info("TriggerResultEvent emitted: $emitted")
             }
         })

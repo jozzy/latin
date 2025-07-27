@@ -14,6 +14,7 @@ import org.latin.server.agents.Agents
 import org.latin.server.events.EventHub
 import org.latin.server.events.TriggerEvent
 import org.slf4j.LoggerFactory
+import java.util.UUID
 
 /**
  * Executes modules in the context of a given `ConversationAgent`.
@@ -37,7 +38,13 @@ class ModuleExecutor(private val eventHub: EventHub, private val agentProvider: 
                 val handover = conversation.classification.let { if (it is AIAgentHandover) it.name else null }
                 if (handover != null) {
                     log.info("Handover detected: $handover in content: $output")
-                    eventHub.publishTrigger(TriggerEvent(handover, input = input))
+                    eventHub.publishTrigger(
+                        TriggerEvent(
+                            event = handover,
+                            input = input,
+                            correlationId = UUID.randomUUID().toString()
+                        )
+                    )
                 } else {
                     output
                 }

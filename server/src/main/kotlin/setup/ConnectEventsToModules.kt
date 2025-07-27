@@ -42,7 +42,7 @@ class ConnectEventsToModules(
                             }
                             eventHub.publish(
                                 TriggerResultEvent(
-                                    id = event.id,
+                                    correlationId = event.id,
                                     event = event.event,
                                     output = result,
                                     duration = timing,

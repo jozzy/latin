@@ -8,6 +8,7 @@ import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -33,6 +34,8 @@ import org.latin.server.flows.FlowRunner
 import org.latin.server.flows.LatinFlow
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModulesManager
+import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Starts the Ktor server with the specified modules and event hub.
@@ -61,6 +64,9 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
         }
 
         install(RoutingRoot) {
+
+            staticResources("/ui", "/ui")
+
             // Health endpoint
             get("/health") {
                 val agents: ArcAgents by injected()
@@ -97,13 +103,19 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
             sse("/events") {
                 eventHub.flow.collect { event ->
                     log.info("Relaying event: ${event.id} to sse clients")
-                    send(ServerSentEvent(id = event.id, data = event.output, event = event::class.simpleName))
+                    send(ServerSentEvent(id = event.id, data = event.output, event = event.event))
                 }
             }
 
             post("/trigger/*") {
                 val event = call.request.uri.substringAfterLast("/trigger/")
-                val result = eventHub.publishTrigger(TriggerEvent(event, input = call.receiveText()))
+                val result = eventHub.publishTrigger(
+                    TriggerEvent(
+                        event = event,
+                        correlationId = UUID.randomUUID().toString(),
+                        input = call.receiveText()
+                    )
+                )
                 call.respondText(result)
             }
 
