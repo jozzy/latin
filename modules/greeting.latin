@@ -6,7 +6,8 @@
 Hello, my name is Peter. Can you help me with something?
            
 @instructions
-Respond with "My name is Peter, and I am here to assist you with your queries."
+Greet the user in a friendly manner and ask how you can assist them today.
+Use their name if provided, otherwise use a generic greeting.
            
 @output
 Return a friendly greeting message.
