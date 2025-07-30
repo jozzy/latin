@@ -26,6 +26,7 @@ fun parseModuleFile(file: File): LatinModule = parseModule(file.nameWithoutExten
 fun parseModule(name: String, content: String): LatinModule {
     var description = ""
     var instructions = ""
+    var inputTemplate = ""
     var output = ""
     val outputSymbols = mutableSetOf<String>()
     val triggers = mutableSetOf<String>()
@@ -44,9 +45,12 @@ fun parseModule(name: String, content: String): LatinModule {
             mode = ReadMode.INSTRUCTIONS
         } else if (line.startsWith("@output")) {
             mode = ReadMode.OUTPUT
+        } else if (line.startsWith("@input_template")) {
+            mode = ReadMode.INPUT_TEMPLATE
         } else {
             when (mode) {
                 ReadMode.INSTRUCTIONS -> instructions += "$line\n"
+                ReadMode.INPUT_TEMPLATE -> inputTemplate += "$line\n"
                 ReadMode.OUTPUT -> {
                     output += "$line\n"
                     outputSymbols += line.findOutputSymbols()
@@ -69,12 +73,14 @@ fun parseModule(name: String, content: String): LatinModule {
         outputSymbols = outputSymbols,
         handovers = linkRegex.extractFrom(content),
         tools = toolsRegex.extractFrom(content),
+        inputTemplate = inputTemplate,
     )
 }
 
 enum class ReadMode {
     INSTRUCTIONS,
     OUTPUT,
+    INPUT_TEMPLATE,
     VERIFICATION,
     NONE,
 }

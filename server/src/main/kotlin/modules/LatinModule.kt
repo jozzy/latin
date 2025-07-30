@@ -13,4 +13,5 @@ data class LatinModule(
     val outputSymbols: Set<String>? = null,
     val handovers: Set<String> = emptySet(),
     val tools: Set<String> = emptySet(),
+    val inputTemplate: String? = null,
 )
