@@ -1,20 +1,15 @@
-package org.latin.server.setup
+package org.latin.server.modules
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.agents.events.EventHandler
 import org.eclipse.lmos.arc.core.getOrThrow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.latin.server.events.EventHub
-import org.latin.server.events.TriggerEvent
-import org.latin.server.events.TriggerResultEvent
-import org.latin.server.modules.ModuleExecutor
-import org.latin.server.modules.ModulesManager
+import org.latin.server.events.ModuleCompletedEvent
+import org.latin.server.events.TriggerModuleEvent
 import org.slf4j.LoggerFactory
 import java.io.File
-import kotlin.getValue
 import kotlin.time.measureTime
 
 class ConnectEventsToModules(
@@ -30,9 +25,9 @@ class ConnectEventsToModules(
     fun connect(): ConnectEventsToModules {
         scope.launch {
             modules.loadModules(modulesFolder)
-            log.info("Connecting trigger events to modules...")
-            eventHub.add(object : EventHandler<TriggerEvent> {
-                override fun onEvent(event: TriggerEvent) {
+            log.info("Connecting events to modules...")
+            eventHub.add(object : EventHandler<TriggerModuleEvent> {
+                override fun onEvent(event: TriggerModuleEvent) {
                     modules.getModuleByTrigger(event.event).forEach { module ->
                         scope.launch {
                             val result: String
@@ -41,11 +36,13 @@ class ConnectEventsToModules(
                                     .getOrThrow()
                             }
                             eventHub.publish(
-                                TriggerResultEvent(
-                                    correlationId = event.id,
+                                ModuleCompletedEvent(
+                                    correlationId = event.correlationId,
                                     event = event.event,
+                                    input = event.input,
                                     output = result,
                                     duration = timing,
+                                    triggerId = event.id,
                                 ),
                             )
                         }

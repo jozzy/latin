@@ -11,8 +11,4 @@ val setupModule = module {
     single(createdAtStart = true) {
         ModuleHotReload(get()).start(modulesFolder)
     }
-
-    single(createdAtStart = true) {
-        ConnectEventsToModules(modulesFolder, get(), get(), get()).connect()
-    }
 }

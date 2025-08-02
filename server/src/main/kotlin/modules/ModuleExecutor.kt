@@ -12,7 +12,7 @@ import org.eclipse.lmos.arc.core.Result
 import org.eclipse.lmos.arc.core.map
 import org.latin.server.agents.Agents
 import org.latin.server.events.EventHub
-import org.latin.server.events.TriggerEvent
+import org.latin.server.events.TriggerModuleEvent
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
@@ -39,11 +39,11 @@ class ModuleExecutor(private val eventHub: EventHub, private val agentProvider: 
                 if (handover != null) {
                     log.info("Handover detected: $handover in content: $output")
                     eventHub.publishTrigger(
-                        TriggerEvent(
+                        TriggerModuleEvent(
                             event = handover,
                             input = input,
-                            correlationId = UUID.randomUUID().toString()
-                        )
+                            correlationId = UUID.randomUUID().toString(),
+                        ),
                     )
                 } else {
                     output

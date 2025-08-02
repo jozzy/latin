@@ -11,8 +11,6 @@ import kotlinx.coroutines.launch
 import org.eclipse.lmos.arc.core.closeWith
 import org.eclipse.lmos.arc.core.onFailure
 import org.eclipse.lmos.arc.core.result
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.latin.server.modules.ModulesManager
 import org.slf4j.LoggerFactory
 import java.io.Closeable

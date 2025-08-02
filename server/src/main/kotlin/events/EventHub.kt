@@ -19,18 +19,16 @@ class EventHub : EventPublisher, EventListeners {
 
     private val eventHandler = BasicEventPublisher(LoggingEventHandler())
 
-    val flow = MutableSharedFlow<TriggerResultEvent>(
+    val flow = MutableSharedFlow<CompletedEvent>(
         replay = 5,
         extraBufferCapacity = 20,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     init {
-        eventHandler.add(object : EventHandler<TriggerResultEvent> {
-            override fun onEvent(event: TriggerResultEvent) {
-                log.info("Received TriggerResultEvent: $event")
-                val emitted = handlers[event.correlationId]?.tryEmit(event.output)
-                log.info("TriggerResultEvent emitted: $emitted")
+        eventHandler.add(object : EventHandler<CompletedEvent> {
+            override fun onEvent(event: CompletedEvent) {
+                handlers[event.triggerId]?.tryEmit(event.output)
             }
         })
     }
@@ -44,7 +42,7 @@ class EventHub : EventPublisher, EventListeners {
 
     override fun publish(event: Event) {
         log.info("Publishing event: $event")
-        if (event is TriggerResultEvent) {
+        if (event is CompletedEvent) {
             val emitted = flow.tryEmit(event)
             log.info("Adding to flow event: $event Emitted: $emitted")
         }

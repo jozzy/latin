@@ -1,5 +1,5 @@
+@trigger ping
 
-
-When a @trigger ping event arrives:
+@instructions
   • If status is UP, return @respond OK.
   • Otherwise, return @respond NOT_OK.

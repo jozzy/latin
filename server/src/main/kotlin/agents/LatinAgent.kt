@@ -2,6 +2,7 @@ package org.latin.server.agents
 
 import org.eclipse.lmos.arc.agents.dsl.AgentDefinitionContext
 import org.eclipse.lmos.arc.agents.dsl.extensions.info
+import org.eclipse.lmos.arc.agents.dsl.extensions.then
 import org.eclipse.lmos.arc.agents.dsl.get
 import org.eclipse.lmos.arc.agents.llm.ChatCompletionSettings
 import org.latin.server.modules.LatinModule
@@ -82,7 +83,7 @@ fun AgentDefinitionContext.buildLatinAgent() {
          Instructions:
          ${module.instructions}
          
-         ### Output
+         ${module.output then "### Output"}
          ${module.output}
         
         """

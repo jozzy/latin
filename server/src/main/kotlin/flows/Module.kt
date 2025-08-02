@@ -6,4 +6,8 @@ val flowModule = module {
 
     single { FlowRunner(get()) }
     single<FlowRepository> { InMemoryFlowRepository() }
+
+    single(createdAtStart = true) {
+        ConnectEventsToFlows(get(), get(), get()).connect()
+    }
 }

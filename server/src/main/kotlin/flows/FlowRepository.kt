@@ -13,5 +13,5 @@ interface FlowRepository {
 
 @Serializable
 data class Flows(
-    val flows: List<LatinFlow>
+    val flows: List<LatinFlow>,
 )

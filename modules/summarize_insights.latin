@@ -1,6 +1,8 @@
 /// Description: Analyzes and summarizes product mention insights.
 
-When @trigger summarize_insights arrives:
+@trigger summarize_insights
+
+@instructions
   • Use the @tool analyze_sentiment to determine positive/negative mentions
   • Use the @tool categorize_mentions to group by topic (reviews, complaints, news, etc.)
   • Use the @tool extract_key_insights to identify trends and patterns

@@ -35,11 +35,15 @@ class ModulesManager {
         return modules.values.filter { trigger in it.triggers }
     }
 
-    fun getModuleByName(name: String): LatinModule? {
+    fun getByName(name: String): LatinModule? {
         return modules[name]
     }
 
     fun list(): List<LatinModule> {
         return modules.values.toList()
+    }
+
+    fun store(module: LatinModule) {
+        modules.put(module.name, module)
     }
 }

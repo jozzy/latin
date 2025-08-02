@@ -7,7 +7,7 @@ data class LatinModule(
     val name: String,
     val version: String,
     val description: String,
-    val output: String,
+    val output: String? = null,
     val triggers: Set<String>,
     val instructions: String,
     val outputSymbols: Set<String>? = null,
