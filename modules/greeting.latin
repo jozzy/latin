@@ -1,6 +1,7 @@
  /// My first module 
            
 @trigger greeting
+@every 3 minutes
 
 @input_template
 Hello, my name is Peter. Can you help me with something?

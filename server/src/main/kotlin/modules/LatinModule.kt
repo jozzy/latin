@@ -1,6 +1,7 @@
 package org.latin.server.modules
 
 import kotlinx.serialization.Serializable
+import org.latin.server.modules.commands.Timer
 
 @Serializable
 data class LatinModule(
@@ -9,6 +10,7 @@ data class LatinModule(
     val description: String,
     val output: String? = null,
     val triggers: Set<String>,
+    val timer: Timer? = null,
     val instructions: String,
     val outputSymbols: Set<String>? = null,
     val handovers: Set<String> = emptySet(),

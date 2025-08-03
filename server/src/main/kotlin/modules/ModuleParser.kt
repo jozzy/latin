@@ -1,5 +1,6 @@
 package org.latin.server.modules
 
+import org.latin.server.modules.commands.TimerCommand
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -31,6 +32,7 @@ fun parseModule(name: String, content: String): LatinModule {
     val outputSymbols = mutableSetOf<String>()
     val triggers = mutableSetOf<String>()
     var mode = ReadMode.NONE
+    val timerCommand = TimerCommand()
 
     content.split("\n").forEach {
         val line = it.trim()
@@ -43,6 +45,8 @@ fun parseModule(name: String, content: String): LatinModule {
             triggers += triggersRegex.extractFrom(line)
         } else if (line.startsWith("@instructions")) {
             mode = ReadMode.INSTRUCTIONS
+        } else if (timerCommand.matches(line)) {
+            mode = ReadMode.NONE
         } else if (line.startsWith("@output")) {
             mode = ReadMode.OUTPUT
         } else if (line.startsWith("@input_template")) {
@@ -70,6 +74,7 @@ fun parseModule(name: String, content: String): LatinModule {
         triggers = triggers,
         instructions = instructions,
         output = output,
+        timer = timerCommand.get(),
         outputSymbols = outputSymbols,
         handovers = linkRegex.extractFrom(content),
         tools = toolsRegex.extractFrom(content),
