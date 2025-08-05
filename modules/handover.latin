@@ -2,5 +2,5 @@
 @trigger customer
 
 @instructions
-  • If the customer is referring to being charged double, call @tool handover_flow with the value "charge_twice".
+  • If the customer is referring to being charged double, hand over the flow to #charge_twice.
   • Otherwise return "OK"

@@ -59,6 +59,7 @@ fun AgentDefinitionContext.buildLatinAgent() {
         tools {
             val module = get<LatinModule>()
             module.tools.forEach { +it }
+            +"handover_flow"
         }
         settings = { ChatCompletionSettings(temperature = 0.0, seed = 42) }
         filterOutput {
@@ -79,6 +80,7 @@ fun AgentDefinitionContext.buildLatinAgent() {
          ## Instructions
          - Read the following instructions carefully and perform the tasks as described.
          - Use the input provided by the user as input for the tasks.
+         - Only handover to another flow if explicitly instructed.
          
          Instructions:
          ${module.instructions}

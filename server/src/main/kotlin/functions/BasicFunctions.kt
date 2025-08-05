@@ -47,12 +47,11 @@ fun FunctionDefinitionContext.buildBasicFunctions() {
         description = "Hands the task over to another flow. A handover is denoted with the # symbol, for example #flow_name",
         params = types(
             string("name", "The name of the flow to handover the task to"),
-            string("input", "The input to pass to the flow"),
         ),
-    ) { (name, input) ->
-        info("Handing over to module: $name with input: $input")
+    ) { (name) ->
+        info("Handing over to module: $name")
         breakWith(
-            input.toString(),
+            message = "Handing over to module $name",
             reason = "Handing over to module $name",
             classification = AIAgentHandover(name.toString().replace("#", "").replace(""""""", "").trim()),
         )

@@ -78,7 +78,7 @@ fun parseModule(name: String, content: String): LatinModule {
         instructions = instructions,
         output = output,
         timer = timerCommand.get(),
-        outputSymbols = outputSymbols,
+        outputSymbols = outputSymbols + instructions.findOutputSymbols(),
         handovers = linkRegex.extractFrom(content),
         tools = toolsRegex.extractFrom(content),
         inputTemplate = inputTemplate,
