@@ -1,0 +1,7 @@
+ /// My first module 
+           
+@trigger execute_plan
+
+@instructions
+
+Execute the plan provided by the user.

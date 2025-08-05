@@ -1,0 +1,11 @@
+/// Description: Handles critical mention alerts that require immediate attention.
+
+@trigger alert_team
+
+ @instructions
+  • Use the @tool send_urgent_alert to notify the crisis management team
+  • Include details of critical mentions (negative sentiment, high volume, etc.)
+  • Send immediate notification to crisis@company.com
+
+  @output
+  return confirmation of alert sent

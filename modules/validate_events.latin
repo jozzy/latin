@@ -1,3 +1,5 @@
-<ENDPOINT:validate>
+@trigger ping
 
-If the event is an error return "NOT_OK" otherwise return "OK".
+@instructions
+  • If status is UP, return @respond OK.
+  • Otherwise, return @respond NOT_OK.

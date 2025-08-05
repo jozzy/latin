@@ -1,0 +1,14 @@
+ /// My first module 
+           
+@trigger plan
+           
+@instructions
+Create a detailed plan for solving the problem of user.
+Use the following functions to assist you:
+
+@tool web_search
+@tool analyze_sentiment
+@tool create_charts
+
+@output
+Return a comprehensive plan that outlines the steps to address the user's issue os that an AI can follow it effectively.
