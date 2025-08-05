@@ -3,9 +3,13 @@ package org.latin.server.modules
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.eclipse.lmos.arc.agents.conversation.AIAgentHandover
+import org.eclipse.lmos.arc.agents.conversation.AssistantMessage
+import org.eclipse.lmos.arc.agents.conversation.latest
 import org.eclipse.lmos.arc.agents.events.EventHandler
 import org.eclipse.lmos.arc.core.getOrThrow
 import org.latin.server.events.EventHub
+import org.latin.server.events.HandoverEvent
 import org.latin.server.events.ModuleCompletedEvent
 import org.latin.server.events.TriggerModuleEvent
 import org.slf4j.LoggerFactory
@@ -32,8 +36,30 @@ class ConnectEventsToModules(
                         scope.launch {
                             val result: String
                             val timing = measureTime {
-                                result = moduleExecutor.runModule(module = module, input = event.input)
+                                val conversation = moduleExecutor.run(module = module, input = event.input)
                                     .getOrThrow()
+                                val output = conversation.latest<AssistantMessage>()?.content ?: ""
+                                val handover =
+                                    conversation.classification.let { if (it is AIAgentHandover) it.name else null }
+                                result = if (handover != null) {
+                                    log.info("Handover detected: $handover in content: $output")
+                                    eventHub.publish(
+                                        HandoverEvent(
+                                            fromEvent = event.event,
+                                            toEvent = handover,
+                                            correlationId = event.correlationId,
+                                        ),
+                                    )
+                                    eventHub.publishTrigger(
+                                        TriggerModuleEvent(
+                                            event = handover,
+                                            input = event.input,
+                                            correlationId = event.correlationId,
+                                        ),
+                                    )
+                                } else {
+                                    output
+                                }
                             }
                             eventHub.publish(
                                 ModuleCompletedEvent(

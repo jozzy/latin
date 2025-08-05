@@ -36,6 +36,7 @@ import org.latin.server.flows.FlowRepository
 import org.latin.server.flows.LatinFlow
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModulesManager
+import org.latin.server.modules.extractTools
 import java.util.*
 
 /**
@@ -66,7 +67,12 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
         }
 
         install(RoutingRoot) {
-            staticResources("/ui", "/ui")
+            staticResources("/ui", "/ui") {
+                modify { _, call ->
+                    call.response.header("Cross-Origin-Embedder-Policy", "credentialless")
+                    call.response.header("Cross-Origin-Opener-Policy", "same-origin")
+                }
+            }
 
             // Health endpoint
             get("/health") {
@@ -102,7 +108,11 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
             put("/modules") {
                 val modules: ModulesManager by injected()
                 val updatedModule = json.decodeFromString<LatinModule>(call.receiveText())
-                modules.store(updatedModule)
+                modules.store(
+                    updatedModule.copy(
+                        tools = updatedModule.instructions.extractTools(),
+                    ),
+                )
                 call.respond(OK)
             }
 

@@ -19,7 +19,7 @@ class EventHub : EventPublisher, EventListeners {
 
     private val eventHandler = BasicEventPublisher(LoggingEventHandler())
 
-    val flow = MutableSharedFlow<CompletedEvent>(
+    val flow = MutableSharedFlow<LatinEvent>(
         replay = 5,
         extraBufferCapacity = 20,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
@@ -42,7 +42,9 @@ class EventHub : EventPublisher, EventListeners {
 
     override fun publish(event: Event) {
         log.info("Publishing event: $event")
-        if (event is CompletedEvent) {
+
+        // Todo open up to all events, not just CompletedEvent and HandoverEvent
+        if (event is CompletedEvent || event is HandoverEvent) {
             val emitted = flow.tryEmit(event)
             log.info("Adding to flow event: $event Emitted: $emitted")
         }

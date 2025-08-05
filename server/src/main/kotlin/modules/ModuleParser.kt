@@ -24,6 +24,9 @@ private val keywords = setOf("tool", "respond")
  * @return The created `LatinModule` object with the extracted data.
  */
 fun parseModuleFile(file: File): LatinModule = parseModule(file.nameWithoutExtension, file.readText())
+
+fun String.extractTools(): Set<String> = toolsRegex.extractFrom(this)
+
 fun parseModule(name: String, content: String): LatinModule {
     var description = ""
     var instructions = ""
