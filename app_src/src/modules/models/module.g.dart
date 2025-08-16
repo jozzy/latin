@@ -12,6 +12,12 @@ _Module _$ModuleFromJson(Map<String, dynamic> json) => _Module(
   instructions: json['instructions'] as String,
   description: json['description'] as String,
   triggers: (json['triggers'] as List<dynamic>).map((e) => e as String).toSet(),
+  outputSymbols: (json['outputSymbols'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toSet(),
+  handovers: (json['handovers'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toSet(),
   timer: json['timer'] == null
       ? null
       : Timer.fromJson(json['timer'] as Map<String, dynamic>),
@@ -24,6 +30,8 @@ Map<String, dynamic> _$ModuleToJson(_Module instance) => <String, dynamic>{
   'instructions': instance.instructions,
   'description': instance.description,
   'triggers': instance.triggers.toList(),
+  'outputSymbols': instance.outputSymbols?.toList(),
+  'handovers': instance.handovers?.toList(),
   'timer': instance.timer,
   'inputTemplate': instance.inputTemplate,
 };

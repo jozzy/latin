@@ -36,6 +36,7 @@ import org.latin.server.flows.FlowRepository
 import org.latin.server.flows.LatinFlow
 import org.latin.server.modules.LatinModule
 import org.latin.server.modules.ModulesManager
+import org.latin.server.modules.extractHandovers
 import org.latin.server.modules.extractTools
 import java.util.*
 
@@ -48,6 +49,7 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
         ignoreUnknownKeys = true
         isLenient = true
         encodeDefaults = true
+        coerceInputValues = true
     }
 
     embeddedServer(CIO, port = port ?: EnvConfig.serverPort) {
@@ -111,6 +113,7 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
                 modules.store(
                     updatedModule.copy(
                         tools = updatedModule.instructions.extractTools(),
+                        handovers = updatedModule.instructions.extractHandovers(),
                     ),
                 )
                 call.respond(OK)
@@ -149,7 +152,7 @@ fun startServer(modules: List<Module>, wait: Boolean = true, port: Int? = null) 
                 val correlationId = UUID.randomUUID().toString()
                 eventHub.publish(
                     TriggerModuleEvent(
-                        event = event,
+                        moduleId = event,
                         correlationId = correlationId,
                         input = call.receiveText(),
                     ),

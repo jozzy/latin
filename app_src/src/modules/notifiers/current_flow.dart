@@ -48,7 +48,7 @@ class CurrentFlow extends _$CurrentFlow {
 
   startFlow(String input) async {
     print('Starting flow with input: $input');
-    final steps = state.map((s) => s.triggers.firstOrNull).toList();
+    final steps = state.map((s) => s.name).toList();
 
     try {
       final result = await http.post(

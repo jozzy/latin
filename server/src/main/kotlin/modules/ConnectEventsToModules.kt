@@ -32,7 +32,7 @@ class ConnectEventsToModules(
             log.info("Connecting events to modules...")
             eventHub.add(object : EventHandler<TriggerModuleEvent> {
                 override fun onEvent(event: TriggerModuleEvent) {
-                    modules.getModuleByTrigger(event.event).forEach { module ->
+                    modules.getModuleById(event.moduleId)?.let { module ->
                         scope.launch {
                             val result: String
                             val timing = measureTime {
@@ -45,14 +45,14 @@ class ConnectEventsToModules(
                                     log.info("Handover detected: $handover in content: $output")
                                     eventHub.publish(
                                         HandoverEvent(
-                                            fromEvent = event.event,
-                                            toEvent = handover,
+                                            fromModule = event.moduleId,
+                                            toModule = handover,
                                             correlationId = event.correlationId,
                                         ),
                                     )
                                     eventHub.publishTrigger(
                                         TriggerModuleEvent(
-                                            event = handover,
+                                            moduleId = handover,
                                             input = event.input,
                                             correlationId = event.correlationId,
                                         ),
@@ -64,7 +64,7 @@ class ConnectEventsToModules(
                             eventHub.publish(
                                 ModuleCompletedEvent(
                                     correlationId = event.correlationId,
-                                    event = event.event,
+                                    moduleId = event.moduleId,
                                     input = event.input,
                                     output = result,
                                     duration = timing,

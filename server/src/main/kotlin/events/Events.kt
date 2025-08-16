@@ -38,15 +38,15 @@ sealed interface TriggerEvent : LatinEvent {
 
 @Serializable
 data class TriggerModuleEvent(
-    val event: String,
+    val moduleId: String,
     override val input: String,
     override val correlationId: String,
 ) : LatinEvent by BaseLatinEvent(), TriggerEvent
 
 @Serializable
 data class HandoverEvent(
-    val fromEvent: String,
-    val toEvent: String,
+    val fromModule: String,
+    val toModule: String,
     val correlationId: String,
 ) : LatinEvent by BaseLatinEvent()
 
@@ -60,7 +60,7 @@ data class TriggerFlowEvent(
 @Serializable
 @SerialName("ModuleCompletedEvent")
 data class ModuleCompletedEvent(
-    val event: String,
+    val moduleId: String,
     override val input: String,
     override val triggerId: String,
     override val output: String,

@@ -25,7 +25,11 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           HGap(),
-          'Latin Playground'.h2,
+          ListTile(
+            dense: true,
+            title: 'Latin Playground'.h2,
+            subtitle: 'A playground for Latin modules.'.txt,
+          ).padding().expand(),
         ].row(),
       ),
       body: Row(

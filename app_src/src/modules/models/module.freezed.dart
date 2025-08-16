@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Module {
 
- String get name; String get version; String get instructions; String get description; Set<String> get triggers; Timer? get timer; String? get inputTemplate;
+ String get name; String get version; String get instructions; String get description; Set<String> get triggers; Set<String>? get outputSymbols; Set<String>? get handovers; Timer? get timer; String? get inputTemplate;
 /// Create a copy of Module
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ModuleCopyWith<Module> get copyWith => _$ModuleCopyWithImpl<Module>(this as Mod
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Module&&(identical(other.name, name) || other.name == name)&&(identical(other.version, version) || other.version == version)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.triggers, triggers)&&(identical(other.timer, timer) || other.timer == timer)&&(identical(other.inputTemplate, inputTemplate) || other.inputTemplate == inputTemplate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Module&&(identical(other.name, name) || other.name == name)&&(identical(other.version, version) || other.version == version)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.triggers, triggers)&&const DeepCollectionEquality().equals(other.outputSymbols, outputSymbols)&&const DeepCollectionEquality().equals(other.handovers, handovers)&&(identical(other.timer, timer) || other.timer == timer)&&(identical(other.inputTemplate, inputTemplate) || other.inputTemplate == inputTemplate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,version,instructions,description,const DeepCollectionEquality().hash(triggers),timer,inputTemplate);
+int get hashCode => Object.hash(runtimeType,name,version,instructions,description,const DeepCollectionEquality().hash(triggers),const DeepCollectionEquality().hash(outputSymbols),const DeepCollectionEquality().hash(handovers),timer,inputTemplate);
 
 @override
 String toString() {
-  return 'Module(name: $name, version: $version, instructions: $instructions, description: $description, triggers: $triggers, timer: $timer, inputTemplate: $inputTemplate)';
+  return 'Module(name: $name, version: $version, instructions: $instructions, description: $description, triggers: $triggers, outputSymbols: $outputSymbols, handovers: $handovers, timer: $timer, inputTemplate: $inputTemplate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ModuleCopyWith<$Res>  {
   factory $ModuleCopyWith(Module value, $Res Function(Module) _then) = _$ModuleCopyWithImpl;
 @useResult
 $Res call({
- String name, String version, String instructions, String description, Set<String> triggers, Timer? timer, String? inputTemplate
+ String name, String version, String instructions, String description, Set<String> triggers, Set<String>? outputSymbols, Set<String>? handovers, Timer? timer, String? inputTemplate
 });
 
 
@@ -65,14 +65,16 @@ class _$ModuleCopyWithImpl<$Res>
 
 /// Create a copy of Module
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? version = null,Object? instructions = null,Object? description = null,Object? triggers = null,Object? timer = freezed,Object? inputTemplate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? version = null,Object? instructions = null,Object? description = null,Object? triggers = null,Object? outputSymbols = freezed,Object? handovers = freezed,Object? timer = freezed,Object? inputTemplate = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,instructions: null == instructions ? _self.instructions : instructions // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,triggers: null == triggers ? _self.triggers : triggers // ignore: cast_nullable_to_non_nullable
-as Set<String>,timer: freezed == timer ? _self.timer : timer // ignore: cast_nullable_to_non_nullable
+as Set<String>,outputSymbols: freezed == outputSymbols ? _self.outputSymbols : outputSymbols // ignore: cast_nullable_to_non_nullable
+as Set<String>?,handovers: freezed == handovers ? _self.handovers : handovers // ignore: cast_nullable_to_non_nullable
+as Set<String>?,timer: freezed == timer ? _self.timer : timer // ignore: cast_nullable_to_non_nullable
 as Timer?,inputTemplate: freezed == inputTemplate ? _self.inputTemplate : inputTemplate // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -168,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Timer? timer,  String? inputTemplate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Set<String>? outputSymbols,  Set<String>? handovers,  Timer? timer,  String? inputTemplate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Module() when $default != null:
-return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.timer,_that.inputTemplate);case _:
+return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.outputSymbols,_that.handovers,_that.timer,_that.inputTemplate);case _:
   return orElse();
 
 }
@@ -189,10 +191,10 @@ return $default(_that.name,_that.version,_that.instructions,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Timer? timer,  String? inputTemplate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Set<String>? outputSymbols,  Set<String>? handovers,  Timer? timer,  String? inputTemplate)  $default,) {final _that = this;
 switch (_that) {
 case _Module():
-return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.timer,_that.inputTemplate);}
+return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.outputSymbols,_that.handovers,_that.timer,_that.inputTemplate);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -206,10 +208,10 @@ return $default(_that.name,_that.version,_that.instructions,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Timer? timer,  String? inputTemplate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String version,  String instructions,  String description,  Set<String> triggers,  Set<String>? outputSymbols,  Set<String>? handovers,  Timer? timer,  String? inputTemplate)?  $default,) {final _that = this;
 switch (_that) {
 case _Module() when $default != null:
-return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.timer,_that.inputTemplate);case _:
+return $default(_that.name,_that.version,_that.instructions,_that.description,_that.triggers,_that.outputSymbols,_that.handovers,_that.timer,_that.inputTemplate);case _:
   return null;
 
 }
@@ -221,7 +223,7 @@ return $default(_that.name,_that.version,_that.instructions,_that.description,_t
 @JsonSerializable()
 
 class _Module implements Module {
-   _Module({required this.name, required this.version, required this.instructions, required this.description, required final  Set<String> triggers, this.timer, this.inputTemplate}): _triggers = triggers;
+   _Module({required this.name, required this.version, required this.instructions, required this.description, required final  Set<String> triggers, final  Set<String>? outputSymbols, final  Set<String>? handovers, this.timer, this.inputTemplate}): _triggers = triggers,_outputSymbols = outputSymbols,_handovers = handovers;
   factory _Module.fromJson(Map<String, dynamic> json) => _$ModuleFromJson(json);
 
 @override final  String name;
@@ -233,6 +235,24 @@ class _Module implements Module {
   if (_triggers is EqualUnmodifiableSetView) return _triggers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_triggers);
+}
+
+ final  Set<String>? _outputSymbols;
+@override Set<String>? get outputSymbols {
+  final value = _outputSymbols;
+  if (value == null) return null;
+  if (_outputSymbols is EqualUnmodifiableSetView) return _outputSymbols;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(value);
+}
+
+ final  Set<String>? _handovers;
+@override Set<String>? get handovers {
+  final value = _handovers;
+  if (value == null) return null;
+  if (_handovers is EqualUnmodifiableSetView) return _handovers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(value);
 }
 
 @override final  Timer? timer;
@@ -251,16 +271,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Module&&(identical(other.name, name) || other.name == name)&&(identical(other.version, version) || other.version == version)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._triggers, _triggers)&&(identical(other.timer, timer) || other.timer == timer)&&(identical(other.inputTemplate, inputTemplate) || other.inputTemplate == inputTemplate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Module&&(identical(other.name, name) || other.name == name)&&(identical(other.version, version) || other.version == version)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._triggers, _triggers)&&const DeepCollectionEquality().equals(other._outputSymbols, _outputSymbols)&&const DeepCollectionEquality().equals(other._handovers, _handovers)&&(identical(other.timer, timer) || other.timer == timer)&&(identical(other.inputTemplate, inputTemplate) || other.inputTemplate == inputTemplate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,version,instructions,description,const DeepCollectionEquality().hash(_triggers),timer,inputTemplate);
+int get hashCode => Object.hash(runtimeType,name,version,instructions,description,const DeepCollectionEquality().hash(_triggers),const DeepCollectionEquality().hash(_outputSymbols),const DeepCollectionEquality().hash(_handovers),timer,inputTemplate);
 
 @override
 String toString() {
-  return 'Module(name: $name, version: $version, instructions: $instructions, description: $description, triggers: $triggers, timer: $timer, inputTemplate: $inputTemplate)';
+  return 'Module(name: $name, version: $version, instructions: $instructions, description: $description, triggers: $triggers, outputSymbols: $outputSymbols, handovers: $handovers, timer: $timer, inputTemplate: $inputTemplate)';
 }
 
 
@@ -271,7 +291,7 @@ abstract mixin class _$ModuleCopyWith<$Res> implements $ModuleCopyWith<$Res> {
   factory _$ModuleCopyWith(_Module value, $Res Function(_Module) _then) = __$ModuleCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String version, String instructions, String description, Set<String> triggers, Timer? timer, String? inputTemplate
+ String name, String version, String instructions, String description, Set<String> triggers, Set<String>? outputSymbols, Set<String>? handovers, Timer? timer, String? inputTemplate
 });
 
 
@@ -288,14 +308,16 @@ class __$ModuleCopyWithImpl<$Res>
 
 /// Create a copy of Module
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? version = null,Object? instructions = null,Object? description = null,Object? triggers = null,Object? timer = freezed,Object? inputTemplate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? version = null,Object? instructions = null,Object? description = null,Object? triggers = null,Object? outputSymbols = freezed,Object? handovers = freezed,Object? timer = freezed,Object? inputTemplate = freezed,}) {
   return _then(_Module(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,instructions: null == instructions ? _self.instructions : instructions // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,triggers: null == triggers ? _self._triggers : triggers // ignore: cast_nullable_to_non_nullable
-as Set<String>,timer: freezed == timer ? _self.timer : timer // ignore: cast_nullable_to_non_nullable
+as Set<String>,outputSymbols: freezed == outputSymbols ? _self._outputSymbols : outputSymbols // ignore: cast_nullable_to_non_nullable
+as Set<String>?,handovers: freezed == handovers ? _self._handovers : handovers // ignore: cast_nullable_to_non_nullable
+as Set<String>?,timer: freezed == timer ? _self.timer : timer // ignore: cast_nullable_to_non_nullable
 as Timer?,inputTemplate: freezed == inputTemplate ? _self.inputTemplate : inputTemplate // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

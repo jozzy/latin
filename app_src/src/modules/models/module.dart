@@ -12,6 +12,8 @@ sealed class Module with _$Module {
     required String instructions,
     required String description,
     required Set<String> triggers,
+    Set<String>? outputSymbols,
+    Set<String>? handovers,
     Timer? timer,
     String? inputTemplate,
   }) = _Module;
@@ -21,9 +23,7 @@ sealed class Module with _$Module {
 
 @freezed
 sealed class Timer with _$Timer {
-  factory Timer({
-    required String interval,
-  }) = _Timer;
+  factory Timer({required String interval}) = _Timer;
 
   factory Timer.fromJson(Map<String, dynamic> json) => _$TimerFromJson(json);
 }

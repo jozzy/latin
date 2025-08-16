@@ -27,6 +27,8 @@ fun parseModuleFile(file: File): LatinModule = parseModule(file.nameWithoutExten
 
 fun String.extractTools(): Set<String> = toolsRegex.extractFrom(this)
 
+fun String.extractHandovers(): Set<String> = linkRegex.extractFrom(this)
+
 fun parseModule(name: String, content: String): LatinModule {
     var description = ""
     var instructions = ""

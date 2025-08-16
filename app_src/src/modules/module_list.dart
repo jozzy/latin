@@ -111,53 +111,53 @@ class ModuleList extends ConsumerWidget {
                         ),
                       ),
                       Divider().padByUnits(0, 1, 0, 1),
-                      VGap(),
-                      if (module.timer != null)
-                        Text(
-                          'Every',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            // color: Colors.deepPurpleAccent[700],
-                          ),
-                        ).toLeft().padByUnits(0, 2, 0, 2),
-                      if (module.timer != null)
-                        format(
-                          module.timer!.interval,
-                        ).txt.toLeft().padByUnits(0, 2, 0, 2),
-                      if (module.timer != null) VGap(),
-                      if (module.timer != null) VGap(),
-                      Text(
-                        'Triggers',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          //   color: Colors.deepPurpleAccent[700],
-                        ),
-                      ).toLeft().padByUnits(0, 2, 0, 2),
-                      VGap(),
-                      VGap(),
-                      module.triggers.isEmpty
-                          ? 'No triggers available'.small.toLeft().padByUnits(
-                              0,
-                              2,
-                              2,
-                              2,
-                            )
-                          : Wrap(
-                              spacing: 2,
-                              children: module.triggers
-                                  .map(
-                                    (trigger) => Card(
-                                      elevation: 0,
-                                      color: Colors.deepPurple[50],
-                                      child: Text(
-                                        trigger,
-                                      ).padByUnits(1, 1, 1, 1),
-                                    ),
-                                  )
-                                  .toList(),
-                            ).toLeft().padByUnits(0, 0, 0, 1),
+                      //VGap(),
+                      // if (module.timer != null)
+                      //   Text(
+                      //        'Every',
+                      //        style: TextStyle(
+                      //          fontSize: 14,
+                      //          fontWeight: FontWeight.bold,
+                      //          // color: Colors.deepPurpleAccent[700],
+                      //        ),
+                      //      ).toLeft().padByUnits(0, 2, 0, 2),
+                      //  if (module.timer != null)
+                      // format(
+                      //         module.timer!.interval,
+                      //      ).txt.toLeft().padByUnits(0, 2, 0, 2),
+                      // if (module.timer != null) VGap(),
+                      // if (module.timer != null) VGap(),
+                      // Text(
+                      //    'Triggers',
+                      //      style: TextStyle(
+                      //        fontSize: 14,
+                      //        fontWeight: FontWeight.bold,
+                      //   color: Colors.deepPurpleAccent[700],
+                      //      ),
+                      //    ).toLeft().padByUnits(0, 2, 0, 2),
+                      // VGap(),
+                      // VGap(),
+                      // module.triggers.isEmpty
+                      //    ? 'No triggers available'.small.toLeft().padByUnits(
+                      //             0,
+                      //            2,
+                      //            2,
+                      //            2,
+                      //          )
+                      //        : Wrap(
+                      //            spacing: 2,
+                      //            children: module.triggers
+                      //               .map(
+                      //                 (trigger) => Card(
+                      //                   elevation: 0,
+                      //                   color: Colors.deepPurple[50],
+                      //                   child: Text(
+                      //                    trigger,
+                      //               ).padByUnits(1, 1, 1, 1),
+                      //),
+                      //          )
+                      //          .toList(),
+                      //          ).toLeft().padByUnits(0, 0, 0, 1),
                       VGap(),
                       VGap(),
                       Text(
@@ -167,7 +167,7 @@ class ModuleList extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                           //     color: Colors.deepPurpleAccent[700],
                         ),
-                      ).toLeft().padByUnits(0, 2, 0, 2),
+                      ).toLeft().padByUnits(0, 2, 1, 2),
                       if (module.instructions != null)
                         module.instructions!
                             .replaceAll("\n", "\n\n")

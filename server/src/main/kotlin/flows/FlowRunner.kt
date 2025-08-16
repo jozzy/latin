@@ -19,9 +19,9 @@ class FlowRunner(val eventHub: EventHub) {
 
         val duration = measureTime {
             try {
-                flow.steps.forEach { event ->
+                flow.steps.forEach { moduleId ->
                     currentInput = eventHub.publishTrigger(
-                        TriggerModuleEvent(correlationId = correlationId, event = event, input = currentInput),
+                        TriggerModuleEvent(correlationId = correlationId, moduleId = moduleId, input = currentInput),
                     )
                 }
             } catch (e: Exception) {

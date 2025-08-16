@@ -31,8 +31,8 @@ class ModulesManager {
         log.debug("Loaded module: $module")
     }
 
-    fun getModuleByTrigger(trigger: String): List<LatinModule> {
-        return modules.values.filter { trigger in it.triggers }
+    fun getModuleById(id: String): LatinModule? {
+        return modules[id]
     }
 
     fun getByName(name: String): LatinModule? {

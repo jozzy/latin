@@ -43,14 +43,14 @@ class ModuleExecutor(private val eventHub: EventHub, private val agentProvider: 
                     log.info("Handover detected: $handover in content: $output")
                     eventHub.publish(
                         HandoverEvent(
-                            fromEvent = handover,
-                            toEvent = handover,
+                            fromModule = handover,
+                            toModule = handover,
                             correlationId = UUID.randomUUID().toString(),
                         ),
                     )
                     eventHub.publishTrigger(
                         TriggerModuleEvent(
-                            event = handover,
+                            moduleId = handover,
                             input = input,
                             correlationId = UUID.randomUUID().toString(),
                         ),

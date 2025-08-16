@@ -6,7 +6,7 @@ part of 'current_flow.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentFlowHash() => r'7141347aecd81cdcd27a5f0af9bcd367a8593a1b';
+String _$currentFlowHash() => r'0de9883cd0ee640a7aeea83cac93697f8bbb9b8a';
 
 /// See also [CurrentFlow].
 @ProviderFor(CurrentFlow)

@@ -6,7 +6,7 @@ part of 'modules.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$modulesHash() => r'fccf981c018ea92e6b1e298335835e99a3d49372';
+String _$modulesHash() => r'fac1ee34c9613c1f663eb7eb9a04780197255f69';
 
 /// See also [Modules].
 @ProviderFor(Modules)

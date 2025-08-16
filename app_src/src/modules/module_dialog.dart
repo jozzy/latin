@@ -4,7 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:latin_ui/src/core/dialog_header.dart';
 import 'package:latin_ui/src/modules/models/module.dart';
 import 'package:latin_ui/src/modules/notifiers/modules.dart';
+import 'package:latin_ui/src/modules/syntax_text_controller.dart';
 import 'package:smiles/smiles.dart';
+
+final moduleSyntax = {
+  '@tool': Colors.blue[900] ?? Colors.blue,
+  '@respond': Colors.blue[900] ?? Colors.blue,
+  '#\\w+': Colors.blue[900] ?? Colors.blue,
+};
 
 class NewModuleDialog extends StatefulWidget {
   const NewModuleDialog({super.key, this.module});
@@ -18,7 +25,7 @@ class NewModuleDialog extends StatefulWidget {
 class NewModuleDialogState extends State<NewModuleDialog> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _valueController = TextEditingController();
+  final _valueController = SyntaxTextController()..colorText(moduleSyntax);
   final _tagsController = TextEditingController();
   final _inputTemplateController = TextEditingController();
 
