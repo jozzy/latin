@@ -54,6 +54,7 @@ ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor-vers
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor-version" }
 ktor-server-static = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor-version" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor-version" }
+ktor-server-sse = { module = "io.ktor:ktor-server-sse", version.ref = "ktor-version" }
 
 graphql-kotlin-ktor = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql-kotlin-version" }
 graphql-kotlin-spring = { module = "com.expediagroup:graphql-kotlin-spring-server", version.ref = "graphql-kotlin-version" }

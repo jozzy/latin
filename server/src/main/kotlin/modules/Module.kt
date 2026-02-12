@@ -1,10 +1,14 @@
 package org.latin.server.modules
 
+import org.koin.dsl.module
+import org.latin.server.setup.modulesFolder
 
-data class LatinModule(
-    val name: String,
-    val version: String,
-    val description: String,
-    val endpoints: Set<String>,
-    val instructions: String
-)
+val latinModule = module {
+    single { ModuleExecutor(get(), get()) }
+
+    single { ModulesManager() }
+
+    single(createdAtStart = true) {
+        ConnectEventsToModules(modulesFolder, get(), get(), get()).connect()
+    }
+}

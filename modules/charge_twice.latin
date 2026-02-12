@@ -1,0 +1,5 @@
+
+@trigger charge_twice
+
+@instructions
+Return an apology to the customer for the inconvenience caused by the double charge.

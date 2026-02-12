@@ -1,0 +1,9 @@
+/// Description: Creates formatted weekly reports from summarized data.
+
+@trigger create_report
+
+@instructions
+  • Use the @tool format_report to create a professional report
+  • Include executive summary, detailed findings, and recommendations
+  • Add charts and visualizations using the @tool create_charts
+  • Return the complete report in PDF format 

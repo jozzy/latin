@@ -1,0 +1,6 @@
+
+@trigger customer
+
+@instructions
+  • If the customer is referring to being charged double, hand over the flow to #charge_twice.
+  • Otherwise return "OK"

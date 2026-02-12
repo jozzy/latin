@@ -1,0 +1,14 @@
+/// Description: Product monitoring workflow that tracks mentions, summarizes insights, and sends weekly reports.
+
+  @trigger product_monitoring_alert
+
+  @instructions
+      • Search for product mentions using the @tool categorize_mentions
+          • Summarize the findings using the @tool summarize_insights
+          • Generate a report using the @tool create_report
+          • Send the report via email using the @tool send_email
+
+  @output
+  return critical mentions  if any detected or if the volume is high
+
+// The workflow should run every Monday at 9:00 AM and track mentions of "OurProduct" across social media and news sites.

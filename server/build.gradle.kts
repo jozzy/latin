@@ -6,11 +6,12 @@ group = "com.example"
 version = "0.0.1"
 
 application {
-    mainClass = "org.latin.server.AgentServerKt"
+    mainClass = "org.latin.server.LatinAppKt"
 }
 
 dependencies {
-    val arcVersion = "0.137.0"
+    val arcVersion = "0.143.0"
+    val koinVersion = "4.0.3"
 
     // Arc
     implementation("org.eclipse.lmos:arc-azure-client:$arcVersion")
@@ -26,6 +27,14 @@ dependencies {
     implementation(libs.kotlinx.coroutines.jdk8)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.sse)
+
+    // Koin
+    implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koinVersion"))
+    implementation("io.insert-koin:koin-core")
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.0")

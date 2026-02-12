@@ -1,0 +1,10 @@
+/// Description: Handles situations with unusually high mention volume.
+
+@trigger high_volume_alert
+
+@instructions
+    • Use the @tool analyze_trend to determine if this is a viral moment
+    • Use the @tool notify_team to alert the social media team
+
+@output
+return "High volume detected - monitoring closely" & add negative semtinment if any detected

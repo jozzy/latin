@@ -1,0 +1,14 @@
+ /// My first module 
+           
+@trigger greeting
+@every 3 minutes
+
+@input_template
+Hello, my name is Peter. Can you help me with something?
+           
+@instructions
+Greet the user in a friendly manner and ask how you can assist them today.
+Use their name if provided, otherwise use a generic greeting.
+           
+@output
+Return a friendly greeting message.

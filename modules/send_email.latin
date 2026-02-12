@@ -1,0 +1,11 @@
+/// Description: Sends weekly reports via email to stakeholders.
+
+@trigger send_email
+
+@instructions
+  • Use the @tool send_email to deliver the report to the management team
+  • Include subject line "Weekly Product Monitoring Report - [Date]"
+  • Send to recipients: ceo@company.com, marketing@company.com, product@company.com
+
+@output
+Output "done"
